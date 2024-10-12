@@ -5,6 +5,7 @@ import org.gradle.api.Project
 import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.gradle.api.plugins.BasePlugin
+import org.gradle.api.tasks.diagnostics.TaskReportTask
 
 const val CI_GROUP_NAME = "CI"
 
@@ -31,7 +32,14 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
                 } ?: createNewTask(project, task)
 
                 createCITask(project, task)
+                configureTaskDisplayTask(project)
             }
+        }
+    }
+
+    private fun configureTaskDisplayTask(project: Project) {
+        project.tasks.withType(TaskReportTask::class.java) {
+            it.displayGroups = listOf(CI_GROUP_NAME, DEVELOPER_GROUP_NAME)
         }
     }
 
