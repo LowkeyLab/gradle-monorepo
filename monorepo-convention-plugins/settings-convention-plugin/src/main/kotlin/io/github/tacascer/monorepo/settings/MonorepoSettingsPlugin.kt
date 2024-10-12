@@ -12,10 +12,10 @@ const val DEVELOPER_GROUP_NAME = "Developer"
 
 /**
  * This plugin adds the following tasks for CI:
- * - lintAll task that runs all lint tasks in all subprojects and included builds
- * - checkAll task that runs all check tasks in all subprojects and included builds
- * - buildAll task that runs all build tasks in all subprojects and included builds
- * - releaseAll task that runs all release tasks in all subprojects and included builds
+ * - lintCI task that runs all lint tasks in all subprojects and included builds
+ * - checkCI task that runs all check tasks in all subprojects and included builds
+ * - buildCI task that runs all build tasks in all subprojects and included builds
+ * - releaseCI task that runs all release tasks in all subprojects and included builds
  *
  * It also adds the following tasks for developers:
  * - lint task that runs linters in a project
@@ -82,5 +82,5 @@ private enum class Tasks(
     RELEASE("release", "Release this project", null),
     ;
 
-    val ciTaskName = "${developerName}All"
+    val ciTaskName = "${developerName}CI"
 }

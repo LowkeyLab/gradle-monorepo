@@ -32,7 +32,7 @@ tasks.sonar {
     dependsOn(tasks.koverXmlReport)
 }
 
-tasks.check {
+tasks.checkCI {
     dependsOn(tasks.sonar)
 }
 
@@ -51,7 +51,7 @@ tasks.bootBuildImage {
     }
 }
 
-tasks.release {
+tasks.releaseCI {
     dependsOn(tasks.bootBuildImage)
 }
 

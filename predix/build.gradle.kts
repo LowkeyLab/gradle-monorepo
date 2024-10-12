@@ -46,6 +46,6 @@ tasks.sonar {
     dependsOn(tasks.koverXmlReport)
 }
 
-tasks.check {
+tasks.checkCI {
     dependsOn(tasks.sonar)
 }
