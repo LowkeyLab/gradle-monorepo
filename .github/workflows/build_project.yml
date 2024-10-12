@@ -29,4 +29,4 @@ jobs:
           SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew checkAll
+        run: ./gradlew checkCI
