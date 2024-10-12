@@ -23,4 +23,4 @@ jobs:
       - name: Create release
         env:
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
-        run: ./gradlew :${{inputs.project}}:releaseAll
+        run: ./gradlew :${{inputs.project}}:releaseCI
