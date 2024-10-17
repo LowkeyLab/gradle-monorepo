@@ -1,3 +1,5 @@
 {
-  "predix": "1.4.0"
+  "predix": "2.0.0",
+  "pto-scheduler": "1.0.0",
+  "monorepo-convention-plugins": "1.0.0"
 }
