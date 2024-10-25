@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlinx.kover)
 }
 
-version = "0.0.1" // x-release-please-version
+version = "1.0.0" // x-release-please-version
 
 // Duplicating functionality of project convention plugin because it is not available in the monorepo-convention-plugins project.
 val lint by tasks.registering { }
