@@ -11,6 +11,10 @@
     "monorepo-convention-plugins": {
       "release-type": "go",
       "extra-files": ["build.gradle.kts"]
+    },
+    "bg3-build-optimizer": {
+      "release-type": "go",
+      "extra-files": ["build.gradle.kts"]
     }
   }
 }

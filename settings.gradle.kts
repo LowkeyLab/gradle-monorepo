@@ -28,3 +28,4 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 includeBuild("pto-scheduler")
 includeBuild("predix")
+includeBuild("bg3-build-optimizer")
