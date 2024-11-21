@@ -24,7 +24,7 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 littlerobots-versionCatalogUpdate = "nl.littlerobots.version-catalog-update:0.8.5"
-sonarqube = "org.sonarqube:5.1.0.4882"
+sonarqube = "org.sonarqube:6.0.0.5145"
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 
 [libraries]
