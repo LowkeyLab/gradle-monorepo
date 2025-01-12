@@ -1,0 +1,6 @@
+spring:
+  docker:
+    compose:
+      file: guess-the-word/compose.yaml
+
+debug: true
