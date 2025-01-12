@@ -1,0 +1,5 @@
+decorator:
+  datasource:
+    datasource-proxy:
+      query:
+        log-level: info
