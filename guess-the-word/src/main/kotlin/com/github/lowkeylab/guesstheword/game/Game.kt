@@ -35,11 +35,10 @@ class Game(
         guess: String,
     ) {
         check(started) { "Game has not started" }
-        require(guess.isNotEmpty()) { "Guess cannot be empty" }
         val currentRound = rounds.last()
-        check(currentRound.guesses[player] == null) { "Player has already guessed" }
+        check(currentRound.getGuessFor(player) == null) { "Player has already guessed" }
         currentRound.addGuess(player, guess)
-        if (currentRound.guesses.size == 2) {
+        if (currentRound.numberOfGuesses() == 2) {
             rounds.add(Round())
         }
     }
@@ -70,8 +69,13 @@ class Round(
         player: Player,
         guess: String,
     ) {
+        require(guess.isNotEmpty()) { "Guess cannot be empty" }
         guesses[player] = guess
     }
+
+    fun getGuessFor(player: Player): String? = guesses[player]
+
+    fun numberOfGuesses(): Int = guesses.size
 
     @Suppress("ktlint:standard:backing-property-naming")
     private val _guesses: Map<String, String>
