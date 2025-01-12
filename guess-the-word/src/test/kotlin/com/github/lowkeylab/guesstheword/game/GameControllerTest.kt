@@ -44,4 +44,13 @@ class GameControllerTest {
                 .uri("/games/${savedGame.id}"),
         ).hasStatus2xxSuccessful()
     }
+
+    @Test
+    fun `trying to find a non-existent game should return 404`() {
+        assertThat(
+            mvc
+                .get()
+                .uri("/games/123"),
+        ).hasStatus(404)
+    }
 }
