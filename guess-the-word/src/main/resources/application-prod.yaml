@@ -1,0 +1,4 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://mongo:IeFEymjrKBcstZbLiDvizOIFCDvmSOzg@mongodb.railway.internal:27017
