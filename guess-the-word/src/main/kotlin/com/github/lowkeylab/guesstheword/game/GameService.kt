@@ -1,5 +1,8 @@
 package com.github.lowkeylab.guesstheword.game
 
+import org.springframework.transaction.annotation.Transactional
+
+@Transactional
 class GameService(
     private val gameRepository: GameRepository,
 ) {

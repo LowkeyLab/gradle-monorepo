@@ -6,9 +6,11 @@ import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 
 @DataMongoTest
+@ComponentScan
 @Import(TestContainersConfig::class)
 class GameServiceTest {
     @Autowired

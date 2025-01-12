@@ -52,6 +52,18 @@ class GameTest {
     }
 
     @Test
+    fun `cannot add a player to a started game`() {
+        val sut = Game()
+        sut.addPlayer(Player("Alice"))
+        sut.addPlayer(Player("Bob"))
+        sut.start()
+
+        shouldThrow<IllegalStateException> {
+            sut.addPlayer(Player("Charlie"))
+        }
+    }
+
+    @Test
     fun `a game starts with round 1`() {
         val sut = Game()
         sut.addPlayer(Player("Alice"))
