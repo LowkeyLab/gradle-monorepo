@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional
 class GameService(
     private val gameRepository: GameRepository,
 ) {
+    fun get(id: String): Game? = gameRepository.findById(id).orElse(null)
+
     fun new(): Game = gameRepository.save(Game())
 
     fun addPlayer(
