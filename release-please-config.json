@@ -15,6 +15,10 @@
     "bg3-build-optimizer": {
       "release-type": "go",
       "extra-files": ["build.gradle.kts"]
+    },
+    "guess-the-word": {
+      "release-type": "go",
+      "extra-files": ["build.gradle.kts"]
     }
   }
 }
