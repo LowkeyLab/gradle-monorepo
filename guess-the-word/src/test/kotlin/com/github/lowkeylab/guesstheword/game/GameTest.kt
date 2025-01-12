@@ -98,6 +98,33 @@ class GameTest {
     }
 
     @Test
+    fun `same player cannot guess twice in a row`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        sut.addPlayer(alice)
+        sut.addPlayer(Player("Bob"))
+        sut.start()
+        sut.addGuess(alice, "word")
+
+        shouldThrow<IllegalStateException> {
+            sut.addGuess(alice, "word")
+        }
+    }
+
+    @Test
+    fun `cannot make an empty guess`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        sut.addPlayer(alice)
+        sut.addPlayer(Player("Bob"))
+        sut.start()
+
+        shouldThrow<IllegalArgumentException> {
+            sut.addGuess(alice, "")
+        }
+    }
+
+    @Test
     fun `after both players guess, a new round is started`() {
         val sut = Game()
         val alice = Player("Alice")

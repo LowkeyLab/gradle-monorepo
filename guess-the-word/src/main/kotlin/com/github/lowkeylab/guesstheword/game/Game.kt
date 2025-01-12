@@ -35,10 +35,9 @@ class Game(
         guess: String,
     ) {
         check(started) { "Game has not started" }
-        if (rounds.isEmpty()) {
-            rounds.add(Round())
-        }
+        require(guess.isNotEmpty()) { "Guess cannot be empty" }
         val currentRound = rounds.last()
+        check(currentRound.guesses[player] == null) { "Player has already guessed" }
         currentRound.addGuess(player, guess)
         if (currentRound.guesses.size == 2) {
             rounds.add(Round())
