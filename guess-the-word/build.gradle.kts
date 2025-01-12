@@ -16,7 +16,7 @@ testing {
     suites {
         val test by getting(JvmTestSuite::class) {
             dependencies {
-                implementation(libs.testcontainers.postgresql)
+                implementation(libs.testcontainers.mongodb)
             }
         }
     }
