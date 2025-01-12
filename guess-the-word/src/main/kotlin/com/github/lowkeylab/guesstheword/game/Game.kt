@@ -1,7 +1,6 @@
 package com.github.lowkeylab.guesstheword.game
 
 import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.Transient
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
@@ -10,7 +9,6 @@ class Game(
     private val rounds: MutableList<Round> = mutableListOf(Round()),
     @Id val id: String? = null,
 ) {
-    @Transient
     private var started: Boolean = false
 
     val currentRound
