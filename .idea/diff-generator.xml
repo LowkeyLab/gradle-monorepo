@@ -2,8 +2,6 @@
 <project version="4">
   <component name="DiffGenerationConfig">
     <option name="snapshotDb" value="false" />
-    <option name="snapshotModelValue" value="guess-the-word.main:entityManagerFactory" />
-    <option name="sourceModelValue" value="guess-the-word.main:entityManagerFactory" />
-    <option name="targetDbValue" value="932178e3-51cd-4c64-ba27-c9d4f7def614" />
+    <option name="snapshotModelValue" value="pto-scheduler.main:pto-scheduler.main" />
   </component>
 </project>
