@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
 class Game(
-    private val players: MutableList<Player> = mutableListOf(),
+    private val players: MutableCollection<Player> = mutableSetOf(),
     private val rounds: MutableList<Round> = mutableListOf(Round()),
     @Id val id: String? = null,
 ) {
@@ -21,6 +21,7 @@ class Game(
 
     fun addPlayer(player: Player) {
         check(players.size < 2) { "Game is full" }
+        check(!players.contains(player)) { "Cannot add the same player twice" }
         players.add(player)
     }
 
@@ -49,7 +50,18 @@ class Game(
 
 class Player(
     val name: String,
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as Player
+
+        return name == other.name
+    }
+
+    override fun hashCode(): Int = name.hashCode()
+}
 
 class Round(
     @Transient

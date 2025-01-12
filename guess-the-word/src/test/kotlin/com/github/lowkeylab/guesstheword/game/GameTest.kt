@@ -64,6 +64,16 @@ class GameTest {
     }
 
     @Test
+    fun `two players cannot have the same name`() {
+        val sut = Game()
+        sut.addPlayer(Player("Alice"))
+
+        shouldThrow<IllegalStateException> {
+            sut.addPlayer(Player("Alice"))
+        }
+    }
+
+    @Test
     fun `a game starts with round 1`() {
         val sut = Game()
         sut.addPlayer(Player("Alice"))
