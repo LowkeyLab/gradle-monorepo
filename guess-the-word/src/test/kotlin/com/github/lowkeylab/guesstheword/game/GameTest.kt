@@ -98,6 +98,18 @@ class GameTest {
     }
 
     @Test
+    fun `cannot add a guess to a game that has not started`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        sut.addPlayer(alice)
+        sut.addPlayer(Player("Bob"))
+
+        shouldThrow<IllegalStateException> {
+            sut.addGuess(alice, "word")
+        }
+    }
+
+    @Test
     fun `same player cannot guess twice in a row`() {
         val sut = Game()
         val alice = Player("Alice")

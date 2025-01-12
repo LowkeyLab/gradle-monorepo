@@ -62,22 +62,20 @@ class Player(
 }
 
 class Round(
-    @Transient
-    val guesses: MutableMap<Player, String> = mutableMapOf(),
+    private val _guesses: MutableMap<String, String> = mutableMapOf(),
 ) {
     fun addGuess(
         player: Player,
         guess: String,
     ) {
         require(guess.isNotEmpty()) { "Guess cannot be empty" }
-        guesses[player] = guess
+        _guesses[player.name] = guess
     }
 
-    fun getGuessFor(player: Player): String? = guesses[player]
+    fun getGuessFor(player: Player): String? = _guesses[player.name]
 
-    fun numberOfGuesses(): Int = guesses.size
+    fun numberOfGuesses(): Int = _guesses.size
 
-    @Suppress("ktlint:standard:backing-property-naming")
-    private val _guesses: Map<String, String>
-        get() = guesses.map { (player, guess) -> player.name to guess }.toMap()
+    val guesses: Map<Player, String>
+        get() = _guesses.mapKeys { Player(it.key) }
 }
