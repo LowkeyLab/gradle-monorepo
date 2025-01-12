@@ -12,4 +12,18 @@ class GameService(
         game.addPlayer(player)
         gameRepository.save(game)
     }
+
+    fun start(game: Game) {
+        game.start()
+        gameRepository.save(game)
+    }
+
+    fun addGuess(
+        game: Game,
+        player: Player,
+        guess: String,
+    ) {
+        game.addGuess(player, guess)
+        gameRepository.save(game)
+    }
 }
