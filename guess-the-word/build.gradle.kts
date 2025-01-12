@@ -8,11 +8,10 @@ version = "0.0.1" // x-release-please-version
 
 dependencies {
     implementation(libs.gavlyukovskiy.datasourceProxy)
-    implementation(libs.liquibase.core)
     implementation(libs.spring.boot.starterDataJpa)
+    implementation(libs.spring.boot.starterDataMongodb)
     implementation(libs.spring.boot.starterWeb)
     implementation(libs.springdoc.openApiStarterWebMvcUi)
-    runtimeOnly(libs.postgresql)
 }
 
 testing {
