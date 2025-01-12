@@ -2,6 +2,7 @@ package com.github.lowkeylab.guesstheword.game
 
 import com.github.lowkeylab.guesstheword.TestContainersConfig
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
@@ -20,5 +21,16 @@ class GameServiceTest {
         val output = sut.new()
 
         output.id.shouldNotBeNull()
+    }
+
+    @Test
+    fun `can add a player to a game`() {
+        val sut = GameService(gameRepository)
+        val game = sut.new()
+        val player = Player("Alice")
+
+        sut.addPlayer(game, player)
+
+        game.numberOfPlayers shouldBe 1
     }
 }
