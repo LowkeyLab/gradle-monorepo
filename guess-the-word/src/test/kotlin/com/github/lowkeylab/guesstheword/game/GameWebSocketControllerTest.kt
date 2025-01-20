@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(TestContainersConfig::class)
-class GameControllerTest {
+class GameWebSocketControllerTest {
     @Autowired
     private lateinit var mvc: MockMvcTester
 
