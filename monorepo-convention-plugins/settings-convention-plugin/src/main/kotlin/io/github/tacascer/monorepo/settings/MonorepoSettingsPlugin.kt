@@ -2,7 +2,6 @@ package io.github.tacascer.monorepo.settings
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.initialization.Settings
 import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.diagnostics.TaskReportTask
@@ -28,7 +27,7 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
             project.pluginManager.apply(BasePlugin::class.java)
             for (task in Tasks.entries) {
                 project.tasks.findByName(task.developerName)?.let {
-                    configureExistingTask(it, task)
+                    configureExistingTask(project, task)
                 } ?: createNewTask(project, task)
 
                 createCITask(project, task)
@@ -49,9 +48,9 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
     ) {
         project.tasks.register(task.ciTaskName) { t ->
             t.group = CI_GROUP_NAME
-            t.description = "Run ${task.developerName} in this project, all subprojects, and included builds"
+            t.description = "Run ${task.ciTaskName} in this project, all subprojects, and included builds"
             t.dependsOn(task.developerName)
-            t.dependsOn(project.subprojects.map { "${it.name}:${task.developerName}" })
+            t.dependsOn(project.subprojects.map { it.tasks.named(task.ciTaskName) })
             t.dependsOn(project.gradle.includedBuilds.map { it.task(":${task.ciTaskName}") })
         }
     }
@@ -66,16 +65,33 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
             if (task.dependency != null) {
                 t.dependsOn(task.dependency.developerName)
             }
+            project.subprojects.forEach { subproject ->
+                subproject.tasks.named(task.developerName).configure {
+                    t.dependsOn(it)
+                }
+            }
+            project.gradle.includedBuilds.forEach { includedBuild ->
+                t.dependsOn(includedBuild.task(":${task.developerName}"))
+            }
         }
     }
 
     private fun configureExistingTask(
-        existingTask: Task,
+        project: Project,
         task: Tasks,
-    ): Task {
-        existingTask.group = DEVELOPER_GROUP_NAME
-        existingTask.description = task.description
-        return existingTask.dependsOn(task.dependency?.developerName)
+    ) {
+        project.tasks.named(task.developerName).configure { existingTask ->
+            existingTask.group = DEVELOPER_GROUP_NAME
+            existingTask.description = task.description
+            project.subprojects.forEach { subproject ->
+                subproject.tasks.named(task.developerName).configure {
+                    existingTask.dependsOn(it)
+                }
+            }
+            project.gradle.includedBuilds.forEach { includedBuild ->
+                existingTask.dependsOn(includedBuild.task(":${task.developerName}"))
+            }
+        }
     }
 }
 
@@ -84,10 +100,10 @@ private enum class Tasks(
     val description: String,
     val dependency: Tasks?,
 ) {
-    LINT("lint", "Run linters in this project", null),
-    CHECK("check", "Run tests and integration tests in this project", LINT),
-    BUILD("build", "Run tests and assembles this project artifacts", CHECK),
-    RELEASE("release", "Release this project", null),
+    LINT("lint", "Run linters in this project and all included builds", null),
+    CHECK("check", "Run tests and integration tests in this project and all included builds", LINT),
+    BUILD("build", "Run tests and assembles this project artifacts and all included builds", CHECK),
+    RELEASE("release", "Release this project and all included builds", null),
     ;
 
     val ciTaskName = "${developerName}CI"
