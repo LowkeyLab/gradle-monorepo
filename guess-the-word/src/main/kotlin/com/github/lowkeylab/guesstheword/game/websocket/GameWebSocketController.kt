@@ -34,7 +34,7 @@ class GameWebSocketController(
         return PlayerAddedMessage(game.id!!, message.player)
     }
 
-    @MessageMapping("/games/addPlayer")
+    @MessageMapping("/games/addGuess")
     @SendTo("/games")
     fun addGuess(
         @Payload message: AddGuessMessage,
