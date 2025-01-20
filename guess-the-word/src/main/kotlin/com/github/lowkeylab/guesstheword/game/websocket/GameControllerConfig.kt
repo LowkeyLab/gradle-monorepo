@@ -12,6 +12,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 class GameControllerConfig : WebSocketMessageBrokerConfigurer {
     override fun configureMessageBroker(registry: MessageBrokerRegistry) {
+        registry.setApplicationDestinationPrefixes("/app")
         registry.enableSimpleBroker("/topic")
     }
 

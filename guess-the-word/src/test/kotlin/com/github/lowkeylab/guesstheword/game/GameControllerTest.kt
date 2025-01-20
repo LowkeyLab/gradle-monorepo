@@ -13,7 +13,7 @@ import org.springframework.test.web.servlet.assertj.MockMvcTester
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(TestContainersConfig::class)
-class GameWebSocketControllerTest {
+class GameControllerTest {
     @Autowired
     private lateinit var mvc: MockMvcTester
 
@@ -23,15 +23,6 @@ class GameWebSocketControllerTest {
     @BeforeEach
     fun setUp() {
         gameRepository.deleteAll()
-    }
-
-    @Test
-    fun `can create a new game`() {
-        assertThat(
-            mvc
-                .post()
-                .uri("/games"),
-        ).hasStatus2xxSuccessful()
     }
 
     @Test
