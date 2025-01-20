@@ -44,22 +44,11 @@ class Game(
     fun guessesForRound(round: Int): Map<Player, String> = rounds[round - 1].guesses
 }
 
-class Player(
+data class Player(
     val name: String,
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+)
 
-        other as Player
-
-        return name == other.name
-    }
-
-    override fun hashCode(): Int = name.hashCode()
-}
-
-class Round(
+data class Round(
     private val _guesses: MutableMap<String, String> = mutableMapOf(),
 ) {
     fun addGuess(
