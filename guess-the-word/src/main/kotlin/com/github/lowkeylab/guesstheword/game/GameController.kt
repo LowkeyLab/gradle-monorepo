@@ -23,7 +23,7 @@ class GameController(
 
     private val games: MutableMap<String, Game> = mutableMapOf()
 
-    @MessageMapping("/game/new")
+    @MessageMapping("/new")
     fun newGame(
         @Payload initialPlayer: Player,
     ): String {
@@ -33,7 +33,7 @@ class GameController(
         return game.id
     }
 
-    @MessageMapping("/game/{id}/addPlayer")
+    @MessageMapping("/{id}/addPlayer")
     fun addPlayer(
         @DestinationVariable gameId: String,
         @Payload player: Player,
@@ -43,7 +43,7 @@ class GameController(
         return player
     }
 
-    @MessageMapping("/game/{id}/start")
+    @MessageMapping("/{id}/start")
     fun startGame(
         @DestinationVariable gameId: String,
     ): Boolean {
@@ -52,7 +52,7 @@ class GameController(
         return true
     }
 
-    @MessageMapping("/game/{id}/addGuess")
+    @MessageMapping("/{id}/addGuess")
     fun addGuess(
         @DestinationVariable gameId: String,
         @Payload message: AddGuessMessage,
