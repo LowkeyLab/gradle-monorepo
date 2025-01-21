@@ -137,7 +137,21 @@ class GameTest {
     }
 
     @Test
-    fun `after both players guess, a new round is started`() {
+    fun `after both players guess different words, a new round is started`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        val bob = Player("Bob")
+        sut.addPlayer(alice)
+        sut.addPlayer(bob)
+        sut.start()
+        sut.addGuess(alice, "word")
+        sut.addGuess(bob, "something")
+
+        sut.currentRound shouldBe 2
+    }
+
+    @Test
+    fun `after both players guess the same word, the game ends`() {
         val sut = Game()
         val alice = Player("Alice")
         val bob = Player("Bob")
@@ -147,6 +161,36 @@ class GameTest {
         sut.addGuess(alice, "word")
         sut.addGuess(bob, "word")
 
-        sut.currentRound shouldBe 2
+        sut.ended shouldBe true
+    }
+
+    @Test
+    fun `after both players guess the same word, no more rounds are added`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        val bob = Player("Bob")
+        sut.addPlayer(alice)
+        sut.addPlayer(bob)
+        sut.start()
+        sut.addGuess(alice, "word")
+        sut.addGuess(bob, "word")
+
+        sut.currentRound shouldBe 1
+    }
+
+    @Test
+    fun `after the game has ended, no more guesses can be added`() {
+        val sut = Game()
+        val alice = Player("Alice")
+        val bob = Player("Bob")
+        sut.addPlayer(alice)
+        sut.addPlayer(bob)
+        sut.start()
+        sut.addGuess(alice, "word")
+        sut.addGuess(bob, "word")
+
+        shouldThrow<IllegalStateException> {
+            sut.addGuess(alice, "word")
+        }
     }
 }
