@@ -1,14 +1,12 @@
 package io.github.tacascer.monorepo.settings
 
-import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
-import org.gradle.testkit.runner.GradleRunner
-import org.gradle.testkit.runner.TaskOutcome
+import jdk.internal.vm.vector.VectorSupport.test
 
 class MonorepoSettingsPluginTest :
-    FunSpec({
+    io.kotest.core.spec.style.FunSpec({
         listOf(
             "lint",
             "check",
@@ -43,14 +41,14 @@ class MonorepoSettingsPluginTest :
                 )
 
                 val result =
-                    GradleRunner
+                    org.gradle.testkit.runner.GradleRunner
                         .create()
                         .withProjectDir(testDir)
                         .withArguments(it)
                         .withPluginClasspath()
                         .build()
 
-                result.task(":$it")?.outcome shouldBe TaskOutcome.UP_TO_DATE
+                result.task(":$it")?.outcome shouldBe org.gradle.testkit.runner.TaskOutcome.UP_TO_DATE
             }
         }
 
@@ -78,7 +76,7 @@ class MonorepoSettingsPluginTest :
             )
 
             val result =
-                GradleRunner
+                org.gradle.testkit.runner.GradleRunner
                     .create()
                     .withProjectDir(testDir)
                     .withArguments("tasks")

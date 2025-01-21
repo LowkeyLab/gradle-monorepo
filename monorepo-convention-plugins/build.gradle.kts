@@ -34,6 +34,9 @@ sonar {
             "${layout.buildDirectory.asFile.get()}/reports/kover/report.xml",
         )
         property(
+            "sonar.coverage.exclusions=io/github/tacascer/monorepo/settings/MonorepoSettingsPlugin.kt",
+        )
+        property(
             "sonar.userHome",
             "${layout.buildDirectory.asFile.get()}/.sonar",
         )
