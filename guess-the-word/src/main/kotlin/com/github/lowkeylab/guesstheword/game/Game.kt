@@ -10,6 +10,7 @@ class Game(
     @Id val id: String? = null,
 ) {
     private var started: Boolean = false
+    var ended: Boolean = false
 
     val currentRound
         get() = rounds.size
@@ -33,11 +34,19 @@ class Game(
         guess: String,
     ) {
         check(started) { "Game has not started" }
+        check(!ended) { "Game has ended" }
         val currentRound = rounds.last()
         check(currentRound.getGuessFor(player) == null) { "Player has already guessed" }
         currentRound.addGuess(player, guess)
         if (currentRound.numberOfGuesses() == 2) {
-            rounds.add(Round())
+            if (currentRound.guesses.values
+                    .distinct()
+                    .size == 1
+            ) {
+                ended = true
+            } else {
+                rounds.add(Round())
+            }
         }
     }
 

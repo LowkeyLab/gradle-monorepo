@@ -63,20 +63,20 @@ class GameControllerTest {
 
         @Test
         fun `can add a player to a game`() {
-            val game = sut.newGame(Player("Alice"))
+            val gameId = sut.newGame(Player("Alice"))
             val newPlayer = Player("Bob")
 
-            val result = sut.addPlayer(game, newPlayer)
+            val result = sut.addPlayer(gameId, newPlayer)
 
             result shouldBe newPlayer
         }
 
         @Test
         fun `can start a game`() {
-            val game = sut.newGame(Player("Alice"))
-            sut.addPlayer(game, Player("Bob"))
+            val gameId = sut.newGame(Player("Alice"))
+            sut.addPlayer(gameId, Player("Bob"))
 
-            val result = sut.startGame(game)
+            val result = sut.startGame(gameId)
 
             result.shouldBeTrue()
         }
@@ -86,13 +86,32 @@ class GameControllerTest {
             val playerOne = Player("Alice")
             val guess = "test"
             val expected = GuessAddedMessage(playerOne, guess)
-            val game = sut.newGame(playerOne)
-            sut.addPlayer(game, Player("Bob"))
-            sut.startGame(game)
+            val gameId = sut.newGame(playerOne)
+            sut.addPlayer(gameId, Player("Bob"))
+            sut.startGame(gameId)
 
-            val result = sut.addGuess(game, AddGuessMessage(playerOne, guess))
+            val result = sut.addGuess(gameId, AddGuessMessage(playerOne, guess))
 
             result shouldBe expected
+        }
+
+        @Test
+        fun `when a game ends, it is saved`() {
+            val playerOne = Player("Alice")
+            val playerTwo = Player("Bob")
+            val gameId = sut.newGame(playerOne)
+            val guess = "test"
+            sut.addPlayer(gameId, playerTwo)
+            sut.startGame(gameId)
+
+            sut.addGuess(gameId, AddGuessMessage(playerOne, guess))
+            sut.addGuess(gameId, AddGuessMessage(playerTwo, guess))
+
+            gameRepository
+                .findById(gameId)
+                .get()
+                .ended
+                .shouldBeTrue()
         }
     }
 }

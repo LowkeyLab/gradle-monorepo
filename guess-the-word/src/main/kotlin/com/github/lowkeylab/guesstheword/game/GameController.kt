@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.messaging.handler.annotation.Payload
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -17,6 +18,7 @@ import java.util.concurrent.ConcurrentMap
 @MessageMapping("/game")
 class GameController(
     private val gameService: GameService,
+    val template: SimpMessagingTemplate,
 ) {
     @GetMapping("{id}")
     fun getGame(
@@ -61,6 +63,11 @@ class GameController(
     ): GuessAddedMessage {
         val game = games[gameId] ?: throw IllegalArgumentException("Game not found")
         game.addGuess(message.player, message.guess)
+        if (game.ended) {
+            gameService.save(game)
+            games.remove(gameId)
+            template.convertAndSend("/topic/game/$gameId/end", true)
+        }
         return GuessAddedMessage(message.player, message.guess)
     }
 }
