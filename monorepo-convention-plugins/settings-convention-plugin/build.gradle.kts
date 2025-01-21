@@ -16,11 +16,7 @@ testing {
     suites {
         val test by getting(JvmTestSuite::class) {
             useJUnitJupiter()
-        }
-
-        val functionalTest by registering(JvmTestSuite::class) {
             dependencies {
-                implementation(project())
                 implementation(libs.kotest.runnerJunit5)
             }
         }
@@ -34,7 +30,6 @@ gradlePlugin {
             implementationClass = "io.github.tacascer.monorepo.settings.MonorepoSettingsPlugin"
         }
     }
-    testSourceSets(sourceSets.getByName("functionalTest"))
 }
 
 dependencies {
@@ -49,8 +44,4 @@ tasks.named("shadowJar", ShadowJar::class) {
 
 tasks.jar {
     archiveClassifier = "plain"
-}
-
-tasks.check {
-    dependsOn(testing.suites.named("functionalTest"))
 }
