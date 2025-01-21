@@ -65,8 +65,8 @@ class GameController(
         game.addGuess(message.player, message.guess)
         if (game.ended) {
             gameService.save(game)
-            games.remove(game.id)
-            template.convertAndSend("/topic/game/${game.id}/end", true)
+            games.remove(gameId)
+            template.convertAndSend("/topic/game/$gameId/end", true)
         }
         return GuessAddedMessage(message.player, message.guess)
     }
