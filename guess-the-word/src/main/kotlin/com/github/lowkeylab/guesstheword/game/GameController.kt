@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.ConcurrentMap
 
 @RestController
 @RequestMapping("games")
@@ -21,7 +23,7 @@ class GameController(
         @PathVariable id: String,
     ): Game? = gameService.get(id) ?: throw ResponseStatusException(HttpStatus.NOT_FOUND)
 
-    private val games: MutableMap<String, Game> = mutableMapOf()
+    private val games: ConcurrentMap<String, Game> = ConcurrentHashMap()
 
     @MessageMapping("/new")
     fun newGame(
