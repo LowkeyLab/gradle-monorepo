@@ -35,7 +35,7 @@ sonar {
         )
         property(
             "sonar.coverage.exclusions",
-            "io/github/tacascer/monorepo/settings/MonorepoSettingsPlugin.kt",
+            "**/MonorepoSettingsPlugin.kt",
         )
         property(
             "sonar.userHome",
