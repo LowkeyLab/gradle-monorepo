@@ -7,6 +7,12 @@ plugins {
     `jvm-test-suite`
 }
 
+val libs = the<LibrariesForLibs>()
+
+dependencies {
+    implementation(libs.oshai.kotlinLoggingJvm)
+}
+
 kotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xjsr305=strict")
@@ -23,8 +29,6 @@ spotless {
 tasks.named("lint") {
     dependsOn(tasks.spotlessApply)
 }
-
-val libs = the<LibrariesForLibs>()
 
 testing {
     suites {

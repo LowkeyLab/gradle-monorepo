@@ -9,6 +9,7 @@ version = "0.0.1" // x-release-please-version
 dependencies {
     implementation(libs.spring.boot.starterDataMongodb)
     implementation(libs.spring.boot.starterWeb)
+    implementation(libs.spring.boot.starterWebsocket)
     implementation(libs.springdoc.openApiStarterWebMvcUi)
 }
 
