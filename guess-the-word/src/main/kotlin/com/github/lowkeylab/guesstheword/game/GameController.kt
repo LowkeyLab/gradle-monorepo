@@ -52,7 +52,7 @@ class GameController(
             }
             is AddGuessMessage -> {
                 game.addGuess(gameEvent.message.player, gameEvent.message.guess)
-                if (game.started) {
+                if (game.ended) {
                     template.convertAndSend("/topic/game/$gameId", ServerGameEvent(GameEndedMessage()))
                 }
                 ServerGameEvent(GuessAddedMessage(gameEvent.message.player, gameEvent.message.guess))
