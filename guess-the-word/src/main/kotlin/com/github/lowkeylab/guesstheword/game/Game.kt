@@ -40,8 +40,7 @@ class Game(
         player: Player,
         guess: String,
     ) {
-        check(started) { "Game has not started" }
-        check(!ended) { "Game has ended" }
+        check(state == GameState.IN_PROGRESS) { "Game is not in progress" }
         val currentRound = rounds.last()
         check(currentRound.getGuessFor(player) == null) { "Player has already guessed" }
         currentRound.addGuess(player, guess)
