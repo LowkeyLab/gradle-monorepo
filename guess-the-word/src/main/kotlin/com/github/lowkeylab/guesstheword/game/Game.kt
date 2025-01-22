@@ -3,16 +3,23 @@ package com.github.lowkeylab.guesstheword.game
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
+enum class GameState {
+    WAITING_FOR_PLAYERS,
+    IN_PROGRESS,
+    ENDED,
+}
+
 @Document
 class Game(
     private val players: MutableCollection<Player> = mutableSetOf(),
     private val rounds: MutableList<Round> = mutableListOf(Round()),
     @Id val id: String? = null,
 ) {
-    private var _started = false
+    private var state: GameState = GameState.WAITING_FOR_PLAYERS
     val started: Boolean
-        get() = _started
-    var ended: Boolean = false
+        get() = state == GameState.IN_PROGRESS
+    val ended: Boolean
+        get() = state == GameState.ENDED
 
     val currentRound
         get() = rounds.size
@@ -25,7 +32,7 @@ class Game(
         check(!players.contains(player)) { "Cannot add the same player twice" }
         players.add(player)
         if (players.size == 2) {
-            _started = true
+            state = GameState.IN_PROGRESS
         }
     }
 
@@ -43,7 +50,7 @@ class Game(
                     .distinct()
                     .size == 1
             ) {
-                ended = true
+                state = GameState.ENDED
             } else {
                 rounds.add(Round())
             }
