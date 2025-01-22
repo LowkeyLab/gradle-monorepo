@@ -49,6 +49,15 @@ class GameControllerTest {
         ).hasStatus(404)
     }
 
+    @Test
+    fun `can create a game`() {
+        assertThat(
+            mvc
+                .post()
+                .uri("/games"),
+        ).hasStatus2xxSuccessful().bodyJson().extractingPath("$.id").isNotNull()
+    }
+
     @Nested
     inner class WebSocketTest {
         @Autowired
@@ -58,16 +67,13 @@ class GameControllerTest {
         fun `can create a game`() {
             val result = sut.newGame()
 
-            result.message
-                .shouldBeTypeOf<GameStartedMessage>()
-                .id
-                .shouldNotBeNull()
+            result.id.shouldNotBeNull()
         }
 
         @Test
         fun `can add a player to a game`() {
-            val gameId = (sut.newGame().message as GameStartedMessage).id
-            val gameEvent = GameEvent(AddPlayerMessage(Player("Alice")))
+            val gameId = sut.newGame().id!!
+            val gameEvent = ClientGameEvent(AddPlayerMessage(Player("Alice")))
             val expected = PlayerAddedMessage(Player("Alice"))
             val result = sut.processGameEvent(gameId, gameEvent)
 
@@ -82,8 +88,11 @@ class GameControllerTest {
 
             @BeforeEach
             fun setUp() {
-                gameId = (sut.newGame().message as GameStartedMessage).id
-                listOf(GameEvent(AddPlayerMessage(Player("Alice"))), GameEvent(AddPlayerMessage(Player("Bob")))).forEach {
+                gameId = sut.newGame().id!!
+                listOf(
+                    ClientGameEvent(AddPlayerMessage(Player("Alice"))),
+                    ClientGameEvent(AddPlayerMessage(Player("Bob"))),
+                ).forEach {
                     sut.processGameEvent(gameId, it)
                 }
             }
@@ -91,7 +100,7 @@ class GameControllerTest {
             @Test
             fun `can add a guess to a game`() {
                 val expected = GuessAddedMessage(Player("Alice"), "word")
-                val result = sut.processGameEvent(gameId, GameEvent(AddGuessMessage(Player("Alice"), "word")))
+                val result = sut.processGameEvent(gameId, ClientGameEvent(AddGuessMessage(Player("Alice"), "word")))
 
                 result.message
                     .shouldBeTypeOf<GuessAddedMessage>()

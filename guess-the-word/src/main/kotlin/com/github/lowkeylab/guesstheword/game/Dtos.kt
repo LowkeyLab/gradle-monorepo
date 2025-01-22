@@ -3,30 +3,37 @@ package com.github.lowkeylab.guesstheword.game
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-sealed class GameMessage
-
-data class GameEvent(
-    val message: GameMessage,
-)
-
-data class GameStartedMessage(
-    val id: String,
-) : GameMessage()
+sealed class ClientGameMessage
 
 data class AddPlayerMessage(
     val player: Player,
-) : GameMessage()
-
-data class PlayerAddedMessage(
-    val player: Player,
-) : GameMessage()
+) : ClientGameMessage()
 
 data class AddGuessMessage(
     val player: Player,
     val guess: String,
-) : GameMessage()
+) : ClientGameMessage()
+
+data class ClientGameEvent(
+    val message: ClientGameMessage,
+)
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+sealed class ServerGameMessage
+
+data class ServerGameEvent(
+    val message: ServerGameMessage,
+)
+
+class GameStartedMessage : ServerGameMessage()
+
+class GameEndedMessage : ServerGameMessage()
+
+data class PlayerAddedMessage(
+    val player: Player,
+) : ServerGameMessage()
 
 data class GuessAddedMessage(
     val player: Player,
     val guess: String,
-) : GameMessage()
+) : ServerGameMessage()
