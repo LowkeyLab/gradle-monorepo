@@ -54,6 +54,7 @@ class GameController(
                 game.addGuess(gameEvent.message.player, gameEvent.message.guess)
                 if (game.ended) {
                     template.convertAndSend("/topic/game/$gameId", ServerGameEvent(GameEndedMessage()))
+                    gameService.save(game)
                 }
                 ServerGameEvent(GuessAddedMessage(gameEvent.message.player, gameEvent.message.guess))
             }
