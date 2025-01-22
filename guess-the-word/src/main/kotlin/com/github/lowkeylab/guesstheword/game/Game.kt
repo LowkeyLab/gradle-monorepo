@@ -9,7 +9,9 @@ class Game(
     private val rounds: MutableList<Round> = mutableListOf(Round()),
     @Id val id: String? = null,
 ) {
-    private var started: Boolean = false
+    private var _started = false
+    val started: Boolean
+        get() = _started
     var ended: Boolean = false
 
     val currentRound
@@ -22,11 +24,9 @@ class Game(
         check(players.size < 2) { "Game is full" }
         check(!players.contains(player)) { "Cannot add the same player twice" }
         players.add(player)
-    }
-
-    fun start() {
-        check(players.size == 2) { "Game must have 2 players" }
-        started = true
+        if (players.size == 2) {
+            _started = true
+        }
     }
 
     fun addGuess(

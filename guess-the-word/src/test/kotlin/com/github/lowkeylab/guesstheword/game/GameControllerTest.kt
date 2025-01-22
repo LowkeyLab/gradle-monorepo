@@ -1,9 +1,9 @@
 package com.github.lowkeylab.guesstheword.game
 
 import com.github.lowkeylab.guesstheword.TestContainersConfig
-import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeTypeOf
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -56,62 +56,47 @@ class GameControllerTest {
 
         @Test
         fun `can create a game`() {
-            shouldNotThrowAny {
-                sut.newGame(Player("Alice"))
-            }
+            val result = sut.newGame()
+
+            result.message
+                .shouldBeTypeOf<GameStartedMessage>()
+                .id
+                .shouldNotBeNull()
         }
 
         @Test
         fun `can add a player to a game`() {
-            val gameId = sut.newGame(Player("Alice"))
-            val newPlayer = Player("Bob")
+            val gameId = (sut.newGame().message as GameStartedMessage).id
+            val gameEvent = GameEvent(AddPlayerMessage(Player("Alice")))
+            val expected = PlayerAddedMessage(Player("Alice"))
+            val result = sut.processGameEvent(gameId, gameEvent)
 
-            val result = sut.addPlayer(gameId, newPlayer)
-
-            result shouldBe newPlayer
+            result.message
+                .shouldBeTypeOf<PlayerAddedMessage>()
+                .shouldBe(expected)
         }
 
-        @Test
-        fun `can start a game`() {
-            val gameId = sut.newGame(Player("Alice"))
-            sut.addPlayer(gameId, Player("Bob"))
+        @Nested
+        inner class GameStarted {
+            private lateinit var gameId: String
 
-            val result = sut.startGame(gameId)
+            @BeforeEach
+            fun setUp() {
+                gameId = (sut.newGame().message as GameStartedMessage).id
+                listOf(GameEvent(AddPlayerMessage(Player("Alice"))), GameEvent(AddPlayerMessage(Player("Bob")))).forEach {
+                    sut.processGameEvent(gameId, it)
+                }
+            }
 
-            result.shouldBeTrue()
-        }
+            @Test
+            fun `can add a guess to a game`() {
+                val expected = GuessAddedMessage(Player("Alice"), "word")
+                val result = sut.processGameEvent(gameId, GameEvent(AddGuessMessage(Player("Alice"), "word")))
 
-        @Test
-        fun `can add a guess to a game`() {
-            val playerOne = Player("Alice")
-            val guess = "test"
-            val expected = GuessAddedMessage(playerOne, guess)
-            val gameId = sut.newGame(playerOne)
-            sut.addPlayer(gameId, Player("Bob"))
-            sut.startGame(gameId)
-
-            val result = sut.addGuess(gameId, AddGuessMessage(playerOne, guess))
-
-            result shouldBe expected
-        }
-
-        @Test
-        fun `when a game ends, it is saved`() {
-            val playerOne = Player("Alice")
-            val playerTwo = Player("Bob")
-            val gameId = sut.newGame(playerOne)
-            val guess = "test"
-            sut.addPlayer(gameId, playerTwo)
-            sut.startGame(gameId)
-
-            sut.addGuess(gameId, AddGuessMessage(playerOne, guess))
-            sut.addGuess(gameId, AddGuessMessage(playerTwo, guess))
-
-            gameRepository
-                .findById(gameId)
-                .get()
-                .ended
-                .shouldBeTrue()
+                result.message
+                    .shouldBeTypeOf<GuessAddedMessage>()
+                    .shouldBe(expected)
+            }
         }
     }
 }

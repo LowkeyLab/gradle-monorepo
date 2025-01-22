@@ -1,6 +1,5 @@
 package com.github.lowkeylab.guesstheword.game
 
-import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.Test
@@ -33,10 +32,7 @@ class GameTest {
         val sut = Game()
 
         sut.addPlayer(Player("Alice"))
-
-        shouldThrow<IllegalStateException> {
-            sut.start()
-        }
+        sut.started shouldBe false
     }
 
     @Test
@@ -45,10 +41,6 @@ class GameTest {
 
         sut.addPlayer(Player("Alice"))
         sut.addPlayer(Player("Bob"))
-
-        shouldNotThrowAny {
-            sut.start()
-        }
     }
 
     @Test
@@ -56,7 +48,6 @@ class GameTest {
         val sut = Game()
         sut.addPlayer(Player("Alice"))
         sut.addPlayer(Player("Bob"))
-        sut.start()
 
         shouldThrow<IllegalStateException> {
             sut.addPlayer(Player("Charlie"))
@@ -79,8 +70,6 @@ class GameTest {
         sut.addPlayer(Player("Alice"))
         sut.addPlayer(Player("Bob"))
 
-        sut.start()
-
         sut.currentRound shouldBe 1
     }
 
@@ -90,7 +79,6 @@ class GameTest {
         val alice = Player("Alice")
         sut.addPlayer(alice)
         sut.addPlayer(Player("Bob"))
-        sut.start()
 
         sut.addGuess(alice, "word")
 
@@ -102,7 +90,6 @@ class GameTest {
         val sut = Game()
         val alice = Player("Alice")
         sut.addPlayer(alice)
-        sut.addPlayer(Player("Bob"))
 
         shouldThrow<IllegalStateException> {
             sut.addGuess(alice, "word")
@@ -115,7 +102,6 @@ class GameTest {
         val alice = Player("Alice")
         sut.addPlayer(alice)
         sut.addPlayer(Player("Bob"))
-        sut.start()
         sut.addGuess(alice, "word")
 
         shouldThrow<IllegalStateException> {
@@ -129,7 +115,6 @@ class GameTest {
         val alice = Player("Alice")
         sut.addPlayer(alice)
         sut.addPlayer(Player("Bob"))
-        sut.start()
 
         shouldThrow<IllegalArgumentException> {
             sut.addGuess(alice, "")
@@ -143,7 +128,6 @@ class GameTest {
         val bob = Player("Bob")
         sut.addPlayer(alice)
         sut.addPlayer(bob)
-        sut.start()
         sut.addGuess(alice, "word")
         sut.addGuess(bob, "something")
 
@@ -157,7 +141,6 @@ class GameTest {
         val bob = Player("Bob")
         sut.addPlayer(alice)
         sut.addPlayer(bob)
-        sut.start()
         sut.addGuess(alice, "word")
         sut.addGuess(bob, "word")
 
@@ -171,7 +154,6 @@ class GameTest {
         val bob = Player("Bob")
         sut.addPlayer(alice)
         sut.addPlayer(bob)
-        sut.start()
         sut.addGuess(alice, "word")
         sut.addGuess(bob, "word")
 
@@ -185,7 +167,6 @@ class GameTest {
         val bob = Player("Bob")
         sut.addPlayer(alice)
         sut.addPlayer(bob)
-        sut.start()
         sut.addGuess(alice, "word")
         sut.addGuess(bob, "word")
 

@@ -28,46 +28,29 @@ class GameController(
     private val games: ConcurrentMap<String, Game> = ConcurrentHashMap()
 
     @MessageMapping("/new")
-    fun newGame(
-        @Payload initialPlayer: Player,
-    ): String {
+    fun newGame(): GameEvent {
         val game = gameService.new()
-        game.addPlayer(initialPlayer)
         games[game.id!!] = game
-        return game.id
+        return GameEvent(GameStartedMessage(game.id))
     }
 
-    @MessageMapping("/{id}/addPlayer")
-    fun addPlayer(
+    @MessageMapping("/{id}")
+    fun processGameEvent(
         @DestinationVariable gameId: String,
-        @Payload player: Player,
-    ): Player {
+        @Payload gameEvent: GameEvent,
+    ): GameEvent {
         val game = games[gameId] ?: throw IllegalArgumentException("Game not found")
-        game.addPlayer(player)
-        return player
-    }
-
-    @MessageMapping("/{id}/start")
-    fun startGame(
-        @DestinationVariable gameId: String,
-    ): Boolean {
-        val game = games[gameId] ?: throw IllegalArgumentException("Game not found")
-        game.start()
-        return true
-    }
-
-    @MessageMapping("/{id}/addGuess")
-    fun addGuess(
-        @DestinationVariable gameId: String,
-        @Payload message: AddGuessMessage,
-    ): GuessAddedMessage {
-        val game = games[gameId] ?: throw IllegalArgumentException("Game not found")
-        game.addGuess(message.player, message.guess)
-        if (game.ended) {
-            gameService.save(game)
-            games.remove(gameId)
-            template.convertAndSend("/topic/game/$gameId/end", true)
+        return when (gameEvent.message) {
+            is AddPlayerMessage -> {
+                val player = gameEvent.message.player
+                game.addPlayer(player)
+                return GameEvent(PlayerAddedMessage(player))
+            }
+            is AddGuessMessage -> {
+                game.addGuess(gameEvent.message.player, gameEvent.message.guess)
+                return GameEvent(GuessAddedMessage(gameEvent.message.player, gameEvent.message.guess))
+            }
+            else -> TODO()
         }
-        return GuessAddedMessage(message.player, message.guess)
     }
 }
