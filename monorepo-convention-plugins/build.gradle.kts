@@ -19,6 +19,8 @@ val checkCI by tasks.registering {
 
 val buildCI by tasks.registering { dependsOn(checkCI) }
 
+val release by tasks.registering {}
+
 val releaseCI by tasks.registering {}
 
 dependencies {
