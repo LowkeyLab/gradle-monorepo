@@ -1,7 +1,7 @@
 [versions]
 adarshrTestLogger = "4.0.0"
 kotest = "5.9.1"
-kotlin = "2.1.0"
+kotlin = "2.1.10"
 kover = "0.9.1"
 liquibase = "4.31.0"
 mapstruct = "1.6.3"
