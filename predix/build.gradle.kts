@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "io.github.tacascer"
-version = "1.4.0" // x-release-please-version
+version = "2.0.0" // x-release-please-version
 
 dependencies {
     implementation(libs.liquibase.core)
