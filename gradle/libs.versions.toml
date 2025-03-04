@@ -31,7 +31,7 @@ spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 adarshr-testLogger-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "adarshrTestLogger" }
 diffplug-spotless-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 gavlyukovskiy-datasourceProxy = "com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.10.0"
-jackson-module-kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2"
+jackson-module-kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3"
 kotest-extensions-spring = "io.kotest.extensions:kotest-extensions-spring:1.3.0"
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 kotest-runnerJunit5 = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
