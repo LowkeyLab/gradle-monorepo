@@ -1,11 +1,10 @@
+/** Contains all tagging-related functions and constants for the BER DSL. */
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
 import io.github.tacascer.kotlinx.serialization.ber.BerElement
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
 import io.github.tacascer.kotlinx.serialization.ber.BerTaggingInfo
-
-/** Contains all tagging-related functions and constants for the BER DSL. */
 
 /** Flag to indicate a tag should be primitive (not constructed) */
 const val PRIMITIVE = 0
@@ -27,7 +26,7 @@ infix fun BerElement.withImplicitTag(tag: BerTaggingInfo): BerTaggedElement {
     // For implicit tagging, use the original element's constructed nature
     val isPrimitive = berBuilder is BerPrimitiveBuilder
     val constructed =
-        if (tag.constructed == false) {
+        if (!tag.constructed) {
             // If explicitly set to not constructed, respect that
             false
         } else {

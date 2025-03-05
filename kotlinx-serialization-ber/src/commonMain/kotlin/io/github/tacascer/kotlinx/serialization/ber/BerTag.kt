@@ -1,7 +1,9 @@
 package io.github.tacascer.kotlinx.serialization.ber
 
 /** ASN.1 BER/DER Universal tag values (X.690) */
-enum class BerTag(val value: Int) {
+enum class BerTag(
+    val value: Int,
+) {
     END_OF_CONTENT(0),
     BOOLEAN(1),
     INTEGER(2),
@@ -16,6 +18,7 @@ enum class BerTag(val value: Int) {
     EMBEDDED_PDV(11),
     UTF8_STRING(12),
     RELATIVE_OID(13),
+
     // 14 and 15 are reserved
     SEQUENCE(16),
     SET(17),
@@ -31,5 +34,5 @@ enum class BerTag(val value: Int) {
     GENERAL_STRING(27),
     UNIVERSAL_STRING(28),
     CHARACTER_STRING(29),
-    BMP_STRING(30)
+    BMP_STRING(30),
 }

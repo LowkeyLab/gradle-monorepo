@@ -9,13 +9,15 @@ import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
  * This implements a DATE type as a custom tag (31) using extended format. The date is encoded as a
  * string in YYYYMMDD format.
  */
-class BerDateBuilder(private val dateString: String) : BerPrimitiveBuilder() {
+class BerDateBuilder(
+    private val dateString: String,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Format date as YYYYMMDD
         val formattedDate =
-                dateString
-                        .replace("-", "") // Remove hyphens if present
-                        .toByteArray()
+            dateString
+                .replace("-", "") // Remove hyphens if present
+                .toByteArray()
 
         // Create custom tag 31 (1F 1F) with the date content
         val result = mutableListOf<Byte>()
@@ -33,5 +35,6 @@ class BerDateBuilder(private val dateString: String) : BerPrimitiveBuilder() {
     }
 
     override fun getTag(): BerTag = BerTag.NULL // Placeholder, not actually used
+
     override fun getTagClass(): BerTagClass = BerTagClass.UNIVERSAL // Placeholder
 }

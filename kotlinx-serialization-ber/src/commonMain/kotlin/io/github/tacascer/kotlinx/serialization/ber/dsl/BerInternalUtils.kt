@@ -6,14 +6,18 @@ import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 /** Internal utility functions for BER encoding */
 internal object BerInternalUtils {
     /** Encodes a BER element with the specified tag and content */
-    fun encodeBerElement(tagClass: BerTagClass, tag: BerTag, content: ByteArray): ByteArray {
+    fun encodeBerElement(
+        tagClass: BerTagClass,
+        tag: BerTag,
+        content: ByteArray,
+    ): ByteArray {
         // Create the result directly rather than using BerWriter
         val result = mutableListOf<Byte>()
 
         // Add tag byte - fix: Add constructed bit for SEQUENCE, SET
         val isConstructed = tag == BerTag.SEQUENCE || tag == BerTag.SET
         val tagByte =
-                ((tagClass.value shl 6) or (if (isConstructed) 0x20 else 0) or tag.value).toByte()
+            ((tagClass.value shl 6) or (if (isConstructed) 0x20 else 0) or tag.value).toByte()
         result.add(tagByte)
 
         // Add length bytes
@@ -33,19 +37,19 @@ internal object BerInternalUtils {
 
     /** Encodes a BER element with a custom tag and content */
     fun encodeBerElement(
-            tagClass: BerTagClass,
-            tagNumber: Long,
-            constructed: Boolean,
-            content: ByteArray
+        tagClass: BerTagClass,
+        tagNumber: Long,
+        constructed: Boolean,
+        content: ByteArray,
     ): ByteArray {
         // Create the result directly rather than using BerWriter
         val result = mutableListOf<Byte>()
 
         // Add tag byte
         val tagByte =
-                (tagClass.value shl 6) or
-                        (if (constructed) 0x20 else 0) or
-                        (if (tagNumber < 31) tagNumber.toInt() else 31)
+            (tagClass.value shl 6) or
+                (if (constructed) 0x20 else 0) or
+                (if (tagNumber < 31) tagNumber.toInt() else 31)
         result.add(tagByte.toByte())
 
         // Handle multi-byte tags

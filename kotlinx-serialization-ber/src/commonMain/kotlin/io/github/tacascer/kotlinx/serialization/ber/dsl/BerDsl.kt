@@ -74,8 +74,8 @@ internal abstract class BerConstructedBuilder : BerBuilder {
 
 /** Creates an explicitly tagged element (uses a constructed form with the given tag) */
 fun explicitlyTagged(
-        tag: ULong,
-        init: BerSequence.() -> Unit,
+    tag: ULong,
+    init: BerSequence.() -> Unit,
 ): BerTaggedElement {
     val seq = Ber.sequence(init) as BerBuilder
     return BerExplicitlyTaggedBuilder(seq, tag.toLong(), BerTagClass.CONTEXT_SPECIFIC)

@@ -9,7 +9,7 @@ version = "0.1.0" // x-release-please-version
 
 kotlin {
     jvm()
-    
+
     sourceSets {
         commonMain {
             dependencies {
@@ -20,7 +20,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(libs.kotest.property)
-                implementation(libs.signum.indispensable)  // Use the correct reference
+                implementation(libs.signum.indispensable) // Use the correct reference
             }
         }
         jvmTest {

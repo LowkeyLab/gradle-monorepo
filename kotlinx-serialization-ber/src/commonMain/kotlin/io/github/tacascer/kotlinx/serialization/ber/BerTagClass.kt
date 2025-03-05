@@ -3,7 +3,9 @@ package io.github.tacascer.kotlinx.serialization.ber
 /**
  * ASN.1 BER/DER tag classes (X.690) The tag class is encoded in the high 2 bits of the tag byte.
  */
-enum class BerTagClass(val value: Int) {
+enum class BerTagClass(
+    val value: Int,
+) {
     /** Universal tag class (0b00) - standardized ASN.1 types */
     UNIVERSAL(0),
 
@@ -14,5 +16,5 @@ enum class BerTagClass(val value: Int) {
     CONTEXT_SPECIFIC(2),
 
     /** Private tag class (0b11) - privately defined types */
-    PRIVATE(3)
+    PRIVATE(3),
 }
