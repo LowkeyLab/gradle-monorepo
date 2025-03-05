@@ -7,30 +7,14 @@ import org.gradle.api.plugins.BasePlugin
 import org.gradle.api.tasks.diagnostics.TaskReportTask
 
 const val CI_GROUP_NAME = "CI"
-
 const val DEVELOPER_GROUP_NAME = "Developer"
 
-/**
- * This plugin adds the following tasks for CI:
- * - lintCI task that runs all lint tasks in all subprojects and included builds
- * - checkCI task that runs all check tasks in all subprojects and included builds
- * - buildCI task that runs all build tasks in all subprojects and included builds
- * - releaseCI task that runs all release tasks in all subprojects and included builds
- *
- * It also adds the following tasks for developers:
- * - lint task that runs linters in a project
- * - release task that releases a project
- */
 class MonorepoSettingsPlugin : Plugin<Settings> {
     override fun apply(settings: Settings) {
         settings.gradle.lifecycle.beforeProject { project ->
             project.pluginManager.apply(BasePlugin::class.java)
-            for (task in Tasks.entries) {
-                project.tasks.findByName(task.developerName)?.let {
-                    configureExistingTask(project, task)
-                } ?: createNewTask(project, task)
-
-                createCITask(project, task)
+            Tasks.entries.forEach { task ->
+                configureTask(project, task)
                 configureTaskDisplayTask(project)
             }
         }
@@ -42,56 +26,47 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
         }
     }
 
-    private fun createCITask(
+    private fun configureTask(
         project: Project,
         task: Tasks,
     ) {
+        // Configure or create developer task
+        project.tasks.findByName(task.developerName)?.let {
+            project.tasks.named(task.developerName).configure { t ->
+                configureDeveloperTask(project, t, task)
+            }
+        } ?: project.tasks.register(task.developerName) { t ->
+            configureDeveloperTask(project, t, task)
+        }
+
+        // Create CI task
         project.tasks.register(task.ciTaskName) { t ->
             t.group = CI_GROUP_NAME
             t.description = "Run ${task.ciTaskName} in this project, all subprojects, and included builds"
             t.dependsOn(task.developerName)
-            t.dependsOn(project.subprojects.map { it.tasks.named(task.ciTaskName) })
+            t.dependsOn(project.subprojects.map { "${it.path}:${task.ciTaskName}" })
             t.dependsOn(project.gradle.includedBuilds.map { it.task(":${task.ciTaskName}") })
         }
     }
 
-    private fun createNewTask(
+    private fun configureDeveloperTask(
         project: Project,
-        task: Tasks,
+        task: org.gradle.api.Task,
+        taskType: Tasks,
     ) {
-        project.tasks.register(task.developerName) { t ->
-            t.group = DEVELOPER_GROUP_NAME
-            t.description = task.description
-            if (task.dependency != null) {
-                t.dependsOn(task.dependency.developerName)
-            }
-            project.subprojects.forEach { subproject ->
-                subproject.tasks.named(task.developerName).configure {
-                    t.dependsOn(it)
-                }
-            }
-            project.gradle.includedBuilds.forEach { includedBuild ->
-                t.dependsOn(includedBuild.task(":${task.developerName}"))
-            }
-        }
-    }
+        task.group = DEVELOPER_GROUP_NAME
+        task.description = taskType.description
 
-    private fun configureExistingTask(
-        project: Project,
-        task: Tasks,
-    ) {
-        project.tasks.named(task.developerName).configure { existingTask ->
-            existingTask.group = DEVELOPER_GROUP_NAME
-            existingTask.description = task.description
-            project.subprojects.forEach { subproject ->
-                subproject.tasks.named(task.developerName).configure {
-                    existingTask.dependsOn(it)
-                }
-            }
-            project.gradle.includedBuilds.forEach { includedBuild ->
-                existingTask.dependsOn(includedBuild.task(":${task.developerName}"))
-            }
+        // Add dependency on previous task if defined
+        taskType.dependency?.let { dependency ->
+            task.dependsOn(dependency.developerName)
         }
+
+        // Add dependencies on same task in subprojects
+        task.dependsOn(project.subprojects.map { "${it.path}:${taskType.developerName}" })
+
+        // Add dependencies on same task in included builds
+        task.dependsOn(project.gradle.includedBuilds.map { it.task(":${taskType.developerName}") })
     }
 }
 
