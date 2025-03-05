@@ -10,22 +10,27 @@ import kotlin.math.log2
 abstract class BerPrimitiveBuilder : BerBuilder
 
 /** BOOLEAN type builder */
-class BerBooleanBuilder(private val value: Boolean) : BerPrimitiveBuilder() {
+class BerBooleanBuilder(
+    private val value: Boolean,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Direct encoding of boolean value for maximum control
         return byteArrayOf(
-                0x01.toByte(), // BOOLEAN tag (universal class is 0 in high bits)
-                0x01.toByte(), // Length 1 byte
-                (if (value) 0xFF else 0x00).toByte() // Boolean value (FF for true, 00 for false)
+            0x01.toByte(), // BOOLEAN tag (universal class is 0 in high bits)
+            0x01.toByte(), // Length 1 byte
+            (if (value) 0xFF else 0x00).toByte(), // Boolean value (FF for true, 00 for false)
         )
     }
 
     override fun getTag() = BerTag.BOOLEAN
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** INTEGER type builder (for Int values) */
-class BerIntegerBuilder(private val value: Int) : BerPrimitiveBuilder() {
+class BerIntegerBuilder(
+    private val value: Int,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Direct encoding for maximum control
         val result = mutableListOf<Byte>()
@@ -44,6 +49,7 @@ class BerIntegerBuilder(private val value: Int) : BerPrimitiveBuilder() {
     }
 
     override fun getTag() = BerTag.INTEGER
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeMinimalIntegerValue(value: Int): ByteArray {
@@ -78,7 +84,9 @@ class BerIntegerBuilder(private val value: Int) : BerPrimitiveBuilder() {
 }
 
 /** INTEGER type builder (for Long values) */
-class BerLongIntegerBuilder(private val value: Long) : BerPrimitiveBuilder() {
+class BerLongIntegerBuilder(
+    private val value: Long,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Direct encoding for maximum control
         val result = mutableListOf<Byte>()
@@ -97,6 +105,7 @@ class BerLongIntegerBuilder(private val value: Long) : BerPrimitiveBuilder() {
     }
 
     override fun getTag() = BerTag.INTEGER
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeMinimalIntegerValue(value: Long): ByteArray {
@@ -131,7 +140,9 @@ class BerLongIntegerBuilder(private val value: Long) : BerPrimitiveBuilder() {
 }
 
 /** REAL type builder - Fixed to use proper BER encoding */
-class BerRealBuilder(private val value: Double) : BerPrimitiveBuilder() {
+class BerRealBuilder(
+    private val value: Double,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Handle special cases
         when {
@@ -139,10 +150,12 @@ class BerRealBuilder(private val value: Double) : BerPrimitiveBuilder() {
                 // Zero is encoded with empty content
                 return byteArrayOf(0x09, 0x00)
             }
+
             value.isNaN() -> {
                 // NaN (special value 0x42)
                 return byteArrayOf(0x09, 0x01, 0x42)
             }
+
             value.isInfinite() -> {
                 // Infinity (positive 0x40, negative 0x41)
                 return if (value > 0) {
@@ -151,6 +164,7 @@ class BerRealBuilder(private val value: Double) : BerPrimitiveBuilder() {
                     byteArrayOf(0x09, 0x01, 0x41) // Negative infinity
                 }
             }
+
             else -> {
                 // Handle normal numbers using binary encoding (base 2)
                 return encodeNormalValue()
@@ -243,6 +257,7 @@ class BerRealBuilder(private val value: Double) : BerPrimitiveBuilder() {
     }
 
     override fun getTag() = BerTag.REAL
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
@@ -254,34 +269,39 @@ class BerNullBuilder : BerPrimitiveBuilder() {
     }
 
     override fun getTag() = BerTag.NULL
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** OCTET STRING type builder */
-class BerOctetStringBuilder(private val value: ByteArray) : BerPrimitiveBuilder() {
-    override fun encode(): ByteArray {
-        return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.OCTET_STRING, value)
-    }
+class BerOctetStringBuilder(
+    private val value: ByteArray,
+) : BerPrimitiveBuilder() {
+    override fun encode(): ByteArray = BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.OCTET_STRING, value)
 
     override fun getTag() = BerTag.OCTET_STRING
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** OBJECT IDENTIFIER type builder */
-class BerObjectIdentifierBuilder(private val value: String) : BerPrimitiveBuilder() {
+class BerObjectIdentifierBuilder(
+    private val value: String,
+) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Convert string OID to encoded form
         val oidComponents = value.split(".").map { it.toInt() }
         val encodedOid = encodeObjectIdentifier(oidComponents)
 
         return BerInternalUtils.encodeBerElement(
-                BerTagClass.UNIVERSAL,
-                BerTag.OBJECT_IDENTIFIER,
-                encodedOid
+            BerTagClass.UNIVERSAL,
+            BerTag.OBJECT_IDENTIFIER,
+            encodedOid,
         )
     }
 
     override fun getTag() = BerTag.OBJECT_IDENTIFIER
+
     override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeObjectIdentifier(components: List<Int>): ByteArray {

@@ -20,16 +20,6 @@ kotlin {
     jvmToolchain(21)
 }
 
-spotless {
-    kotlin {
-        ktlint()
-    }
-}
-
-tasks.named("lint") {
-    dependsOn(tasks.spotlessApply)
-}
-
 testing {
     suites {
         val test by getting(JvmTestSuite::class) {
