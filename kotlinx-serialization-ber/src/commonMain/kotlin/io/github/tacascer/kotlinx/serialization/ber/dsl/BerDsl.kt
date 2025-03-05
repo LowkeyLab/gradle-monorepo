@@ -1,7 +1,12 @@
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
+import io.github.tacascer.kotlinx.serialization.ber.BerElement
+import io.github.tacascer.kotlinx.serialization.ber.BerSequence
+import io.github.tacascer.kotlinx.serialization.ber.BerSet
+import io.github.tacascer.kotlinx.serialization.ber.BerSetOf
 import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
 import kotlinx.datetime.Instant
 
 /** Main entry point for the BER DSL */

@@ -1,6 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
-
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+package io.github.tacascer.kotlinx.serialization.ber
 
 /** Public interface representing a BER element */
 interface BerElement {
@@ -31,7 +29,7 @@ interface BerTaggedElement : BerElement
 
 /** Public class for tagging operations */
 data class BerTaggingInfo(
-        val tagNumber: Long,
-        val tagClass: BerTagClass,
-        val constructed: Boolean = true
+    val tagNumber: Long,
+    val tagClass: BerTagClass,
+    val constructed: Boolean = true,
 )

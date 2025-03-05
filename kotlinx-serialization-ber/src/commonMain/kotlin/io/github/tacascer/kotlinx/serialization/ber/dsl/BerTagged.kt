@@ -2,15 +2,16 @@ package io.github.tacascer.kotlinx.serialization.ber.dsl
 
 import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
 
 /** Builder for implicitly tagged elements */
 internal class BerImplicitlyTaggedBuilder(
-        private val inner: BerBuilder,
-        private val tagNumber: Long,
-        private val tagClass: BerTagClass,
-        private val constructed: Boolean
-) : BerBuilder, BerTaggedElement {
-
+    private val inner: BerBuilder,
+    private val tagNumber: Long,
+    private val tagClass: BerTagClass,
+    private val constructed: Boolean,
+) : BerBuilder,
+    BerTaggedElement {
     override fun encode(): ByteArray {
         // For an implicit tag, we get the content of the inner element
         // but ignore its tag and use our own
@@ -51,11 +52,11 @@ internal class BerImplicitlyTaggedBuilder(
 
 /** Builder for explicitly tagged elements */
 internal class BerExplicitlyTaggedBuilder(
-        private val inner: BerBuilder,
-        private val tagNumber: Long,
-        private val tagClass: BerTagClass
-) : BerBuilder, BerTaggedElement {
-
+    private val inner: BerBuilder,
+    private val tagNumber: Long,
+    private val tagClass: BerTagClass,
+) : BerBuilder,
+    BerTaggedElement {
     override fun encode(): ByteArray {
         // For explicit tagging, we include the entire inner element
         val innerBytes = inner.encode()
