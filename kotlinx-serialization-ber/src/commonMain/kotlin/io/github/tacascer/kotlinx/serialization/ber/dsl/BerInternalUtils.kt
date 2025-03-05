@@ -10,8 +10,10 @@ internal object BerInternalUtils {
         // Create the result directly rather than using BerWriter
         val result = mutableListOf<Byte>()
 
-        // Add tag byte
-        val tagByte = ((tagClass.value shl 6) or tag.value).toByte()
+        // Add tag byte - fix: Add constructed bit for SEQUENCE, SET
+        val isConstructed = tag == BerTag.SEQUENCE || tag == BerTag.SET
+        val tagByte =
+                ((tagClass.value shl 6) or (if (isConstructed) 0x20 else 0) or tag.value).toByte()
         result.add(tagByte)
 
         // Add length bytes
