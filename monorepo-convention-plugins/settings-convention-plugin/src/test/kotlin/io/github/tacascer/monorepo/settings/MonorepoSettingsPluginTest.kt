@@ -3,7 +3,6 @@ package io.github.tacascer.monorepo.settings
 import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
-import jdk.internal.vm.vector.VectorSupport.test
 
 class MonorepoSettingsPluginTest :
     io.kotest.core.spec.style.FunSpec({
