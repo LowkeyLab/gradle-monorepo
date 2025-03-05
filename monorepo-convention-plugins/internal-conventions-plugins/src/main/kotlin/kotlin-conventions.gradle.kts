@@ -3,3 +3,13 @@ plugins {
     id("com.diffplug.spotless")
     id("org.jetbrains.kotlinx.kover")
 }
+
+spotless {
+    kotlin {
+        ktlint()
+    }
+}
+
+tasks.named("lint") {
+    dependsOn(tasks.spotlessApply)
+}

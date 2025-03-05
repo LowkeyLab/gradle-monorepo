@@ -1,9 +1,7 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sonarqube)
-    id("kotlin-library-conventions")
+    alias(libs.plugins.kotlin.serialization)
+    id("kotlin-multiplatform-conventions")
 }
 
 group = "io.github.tacascer.kotlinx.serialization"
@@ -11,18 +9,23 @@ version = "0.1.0" // x-release-please-version
 
 kotlin {
     jvm()
-    
+
     sourceSets {
         commonMain {
             dependencies {
                 implementation(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.datetime) // Use version from catalog
             }
         }
         commonTest {
             dependencies {
-                implementation(libs.kotest.runnerJunit5)
                 implementation(libs.kotest.property)
-                implementation(libs.kotest.assertions.core)
+                implementation(libs.signum.indispensable) // Use the correct reference
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(libs.kotest.runnerJunit5)
             }
         }
     }

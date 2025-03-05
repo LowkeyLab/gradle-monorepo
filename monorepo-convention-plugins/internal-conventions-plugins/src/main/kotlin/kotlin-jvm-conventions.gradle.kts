@@ -2,8 +2,8 @@ import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     id("kotlin-conventions")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.kapt")
+    kotlin("jvm")
+    kotlin("kapt")
     `jvm-test-suite`
 }
 
@@ -18,16 +18,6 @@ kotlin {
         freeCompilerArgs.add("-Xjsr305=strict")
     }
     jvmToolchain(21)
-}
-
-spotless {
-    kotlin {
-        ktlint()
-    }
-}
-
-tasks.named("lint") {
-    dependsOn(tasks.spotlessApply)
 }
 
 testing {

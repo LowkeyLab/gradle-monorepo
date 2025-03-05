@@ -1,8 +1,10 @@
 [versions]
 adarshrTestLogger = "4.0.0"
+indispensable = "3.14.0"
 kotest = "5.9.1"
 kotlin = "2.1.10"
-kotlinxSerialization = "1.6.3"
+kotlinxDatetime = "0.5.0"
+kotlinxSerialization = "1.7.0"
 kover = "0.9.1"
 liquibase = "4.31.1"
 mapstruct = "1.6.3"
@@ -42,6 +44,7 @@ kotlin-allopen-plugin = { module = "org.jetbrains.kotlin:kotlin-allopen", versio
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-noarg-plugin = { module = "org.jetbrains.kotlin:kotlin-noarg", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinx-kover-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinxSerialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
@@ -51,6 +54,7 @@ mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.re
 ninjaSquad-springmockk = "com.ninja-squad:springmockk:4.0.2"
 oshai-kotlinLoggingJvm = "io.github.oshai:kotlin-logging-jvm:7.0.4"
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+signum-indispensable = { module = "at.asitplus.signum:indispensable", version.ref = "indispensable" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
 spring-boot-dockerCompose = { module = "org.springframework.boot:spring-boot-docker-compose", version.ref = "springBoot" }
