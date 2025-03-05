@@ -5,21 +5,21 @@ import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 /** Contains all tagging-related functions and constants for the BER DSL. */
 
 /** Flag to indicate a tag should be primitive (not constructed) */
-public const val PRIMITIVE = 0
+const val PRIMITIVE = 0
 
 /** Associates a tag class with a tag number */
-public infix fun ULong.withClass(tagClass: BerTagClass): BerTaggingInfo {
+infix fun ULong.withClass(tagClass: BerTagClass): BerTaggingInfo {
     return BerTaggingInfo(this.toLong(), tagClass)
 }
 
 /** Makes a tag primitive (not constructed) */
-public infix fun ULong.without(flag: Int): BerTaggingInfo {
+infix fun ULong.without(flag: Int): BerTaggingInfo {
     require(flag == PRIMITIVE) { "Only PRIMITIVE flag is supported" }
     return BerTaggingInfo(this.toLong(), BerTagClass.CONTEXT_SPECIFIC, constructed = false)
 }
 
 /** Applies an implicit tag to an element */
-public infix fun BerElement.withImplicitTag(tag: BerTaggingInfo): BerTaggedElement {
+infix fun BerElement.withImplicitTag(tag: BerTaggingInfo): BerTaggedElement {
     val berBuilder = this as BerBuilder
 
     // Determine if this element should be constructed based on its type
@@ -38,6 +38,6 @@ public infix fun BerElement.withImplicitTag(tag: BerTaggingInfo): BerTaggedEleme
 }
 
 /** Applies an explicit tag to an element */
-public infix fun BerElement.withExplicitTag(tag: BerTaggingInfo): BerTaggedElement {
+infix fun BerElement.withExplicitTag(tag: BerTaggingInfo): BerTaggedElement {
     return BerExplicitlyTaggedBuilder(this as BerBuilder, tag.tagNumber, tag.tagClass)
 }
