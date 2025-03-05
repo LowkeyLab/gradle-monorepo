@@ -24,62 +24,171 @@ internal class BerBooleanBuilder(private val value: Boolean) : BerPrimitiveBuild
 /** INTEGER type builder (for Int values) */
 internal class BerIntegerBuilder(private val value: Int) : BerPrimitiveBuilder(), BerElement {
     override fun encode(): ByteArray {
-        val content = encodeInteger(value)
-        return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.INTEGER, content)
+        // Direct encoding for maximum control - avoid potential loops
+        return encodeIntegerDirect(value)
     }
 
     override fun getTag() = BerTag.INTEGER
     override fun getTagClass() = BerTagClass.UNIVERSAL
 
-    private fun encodeInteger(value: Int): ByteArray {
-        if (value == 0) return byteArrayOf(0)
+    private fun encodeIntegerDirect(value: Int): ByteArray {
+        // Handle the zero case separately
+        if (value == 0) {
+            return byteArrayOf(0x02, 0x01, 0x00) // INTEGER tag (02), length 1, value 0
+        }
 
+        // For other values, encode properly
+        val content = mutableListOf<Byte>()
+
+        // For positive numbers, ensure the high bit is not set on first byte
+        // For negative numbers, ensure the high bit is set on first byte
         var v = value
-        val bytes = mutableListOf<Byte>()
+        var needExtraByte = false
 
-        while (v != 0) {
-            bytes.add(0, (v and 0xFF).toByte())
-            v = v shr 8
+        // Special handling for Integer.MIN_VALUE
+        if (v == Int.MIN_VALUE) {
+            // Add special case handling to avoid overflows
+            return byteArrayOf(
+                    0x02, // INTEGER tag
+                    0x05, // length 5
+                    0x80.toByte(),
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00 // MIN_VALUE encoding
+            )
         }
 
-        // Ensure proper sign extension
-        val firstByte = bytes[0].toInt() and 0xFF
-        if ((value < 0 && firstByte < 128) || (value > 0 && firstByte >= 128)) {
-            bytes.add(0, (if (value < 0) 0xFF else 0).toByte())
+        // Get the absolute value for easier processing (for negative numbers)
+        val isNegative = v < 0
+        if (isNegative) {
+            // Use negative logic with two's complement without overflow risk
+            // We use this approach to avoid issues with Int.MIN_VALUE
+
+            // Process bytes one at a time
+            var counter = 0
+            var lastByte: Int
+
+            do {
+                lastByte = (v and 0xFF)
+                content.add(0, lastByte.toByte())
+                v = v shr 8
+                counter++
+            } while (counter < 4) // Int has 4 bytes maximum
+
+            // Ensure proper sign extension
+            if ((content[0].toInt() and 0x80) == 0) {
+                content.add(0, 0xFF.toByte()) // Add sign extension
+            }
+        } else {
+            // Positive number - simpler case
+            do {
+                content.add(0, (v and 0xFF).toByte())
+                if (content[0].toInt() and 0x80 != 0 && content.size == 1) {
+                    needExtraByte = true // Need leading zero to indicate positive
+                }
+                v = v shr 8
+            } while (v != 0)
+
+            // Add leading zero for positive numbers that would appear negative
+            if (needExtraByte) {
+                content.add(0, 0x00)
+            }
         }
 
-        return bytes.toByteArray()
+        // Create complete BER encoding
+        val result = mutableListOf<Byte>()
+        result.add(0x02) // INTEGER tag
+        result.add(content.size.toByte()) // Length
+        result.addAll(content) // Content
+
+        return result.toByteArray()
     }
 }
 
 /** INTEGER type builder (for Long values) */
 internal class BerLongIntegerBuilder(private val value: Long) : BerPrimitiveBuilder(), BerElement {
     override fun encode(): ByteArray {
-        val content = encodeInteger(value)
-        return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.INTEGER, content)
+        // Direct encoding for maximum control - avoid potential loops
+        return encodeLongDirect(value)
     }
 
     override fun getTag() = BerTag.INTEGER
     override fun getTagClass() = BerTagClass.UNIVERSAL
 
-    private fun encodeInteger(value: Long): ByteArray {
-        if (value == 0L) return byteArrayOf(0)
+    private fun encodeLongDirect(value: Long): ByteArray {
+        // Handle the zero case separately
+        if (value == 0L) {
+            return byteArrayOf(0x02, 0x01, 0x00) // INTEGER tag (02), length 1, value 0
+        }
 
+        // For other values, encode properly
+        val content = mutableListOf<Byte>()
+
+        // For positive numbers, ensure the high bit is not set on first byte
+        // For negative numbers, ensure the high bit is set on first byte
         var v = value
-        val bytes = mutableListOf<Byte>()
+        var needExtraByte = false
 
-        while (v != 0L) {
-            bytes.add(0, (v and 0xFF).toByte())
-            v = v shr 8
+        // Special handling for Long.MIN_VALUE
+        if (v == Long.MIN_VALUE) {
+            // Add special case handling to avoid overflows
+            return byteArrayOf(
+                    0x02, // INTEGER tag
+                    0x09, // length 9
+                    0x80.toByte(),
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00,
+                    0x00 // MIN_VALUE encoding
+            )
         }
 
-        // Ensure proper sign extension
-        val firstByte = bytes[0].toInt() and 0xFF
-        if ((value < 0 && firstByte < 128) || (value > 0 && firstByte >= 128)) {
-            bytes.add(0, (if (value < 0) 0xFF else 0).toByte())
+        // Get the absolute value for easier processing (for negative numbers)
+        val isNegative = v < 0
+        if (isNegative) {
+            // Process bytes one at a time
+            var counter = 0
+            var lastByte: Int
+
+            do {
+                lastByte = (v and 0xFF).toInt()
+                content.add(0, lastByte.toByte())
+                v = v shr 8
+                counter++
+            } while (counter < 8) // Long has 8 bytes maximum
+
+            // Ensure proper sign extension
+            if ((content[0].toInt() and 0x80) == 0) {
+                content.add(0, 0xFF.toByte()) // Add sign extension
+            }
+        } else {
+            // Positive number - simpler case
+            do {
+                content.add(0, (v and 0xFF).toByte())
+                if (content[0].toInt() and 0x80 != 0 && content.size == 1) {
+                    needExtraByte = true // Need leading zero to indicate positive
+                }
+                v = v shr 8
+            } while (v != 0L) // Fix: Use Long literal (0L) instead of Int literal (0)
+
+            // Add leading zero for positive numbers that would appear negative
+            if (needExtraByte) {
+                content.add(0, 0x00)
+            }
         }
 
-        return bytes.toByteArray()
+        // Create complete BER encoding
+        val result = mutableListOf<Byte>()
+        result.add(0x02) // INTEGER tag
+        result.add(content.size.toByte()) // Length
+        result.addAll(content) // Content
+
+        return result.toByteArray()
     }
 }
 
