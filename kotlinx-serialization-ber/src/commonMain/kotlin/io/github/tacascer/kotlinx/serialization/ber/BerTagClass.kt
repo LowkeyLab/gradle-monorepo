@@ -1,22 +1,26 @@
 package io.github.tacascer.kotlinx.serialization.ber
 
 /** BER tag classes as defined in ITU-T X.690. */
-enum class BerTagClass(val value: Int) {
+enum class BerTagClass(
+    val value: Int,
+) {
     UNIVERSAL(0),
     APPLICATION(1),
     CONTEXT_SPECIFIC(2),
-    PRIVATE(3);
+    PRIVATE(3),
+    ;
 
     companion object {
-        fun fromValue(value: Int): BerTagClass {
-            return values().firstOrNull { it.value == value }
-                    ?: throw IllegalArgumentException("Unknown tag class: $value")
-        }
+        fun fromValue(value: Int): BerTagClass =
+            entries.firstOrNull { it.value == value }
+                ?: throw IllegalArgumentException("Unknown tag class: $value")
     }
 }
 
 /** Universal tags for BER encoding as defined in ITU-T X.690. */
-enum class BerTag(val value: Int) {
+enum class BerTag(
+    val value: Int,
+) {
     EOC(0),
     BOOLEAN(1),
     INTEGER(2),
@@ -45,12 +49,12 @@ enum class BerTag(val value: Int) {
     GENERAL_STRING(27),
     UNIVERSAL_STRING(28),
     CHARACTER_STRING(29),
-    BMP_STRING(30);
+    BMP_STRING(30),
+    ;
 
     companion object {
-        fun fromValue(value: Int): BerTag {
-            return values().firstOrNull { it.value == value }
-                    ?: throw IllegalArgumentException("Unknown tag: $value")
-        }
+        fun fromValue(value: Int): BerTag =
+            values().firstOrNull { it.value == value }
+                ?: throw IllegalArgumentException("Unknown tag: $value")
     }
 }
