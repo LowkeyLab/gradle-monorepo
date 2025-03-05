@@ -1,9 +1,7 @@
 plugins {
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.kotlin.multiplatform)
-    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.sonarqube)
-    id("kotlin-library-conventions")
+    alias(libs.plugins.kotlin.serialization)
+    id("kotlin-multiplatform-conventions")
 }
 
 group = "io.github.tacascer.kotlinx.serialization"
@@ -22,7 +20,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotest.runnerJunit5)
                 implementation(libs.kotest.property)
-                implementation(libs.kotest.assertions.core)
             }
         }
     }
