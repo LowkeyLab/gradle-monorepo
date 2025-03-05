@@ -14,13 +14,18 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlinx.serialization.core)
+                implementation(libs.kotlinx.datetime) // Use version from catalog
             }
         }
         commonTest {
             dependencies {
-                implementation(libs.kotest.runnerJunit5)
                 implementation(libs.kotest.property)
                 implementation(libs.signum.indispensable)  // Use the correct reference
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(libs.kotest.runnerJunit5)
             }
         }
     }

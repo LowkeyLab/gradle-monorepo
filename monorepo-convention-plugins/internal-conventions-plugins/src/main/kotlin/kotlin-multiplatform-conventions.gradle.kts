@@ -24,3 +24,7 @@ kotlin {
         }
     }
 }
+
+tasks.withType<Test>().configureEach {
+   useJUnitPlatform()
+}
