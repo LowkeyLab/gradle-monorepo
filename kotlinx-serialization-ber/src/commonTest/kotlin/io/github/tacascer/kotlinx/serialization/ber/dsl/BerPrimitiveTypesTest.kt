@@ -31,7 +31,7 @@ class BerPrimitiveTypesTest :
 
                 // Long integer
                 val longValue = Ber.Int(1234567890123456789L).encode()
-                longValue.toHexString() shouldBe "02091121f494a6f7b75bcd15"
+                longValue.toHexString() shouldBe "0208112210f47de98115"
             }
 
             test("encode Null value correctly") {
