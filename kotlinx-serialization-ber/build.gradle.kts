@@ -20,6 +20,7 @@ kotlin {
             dependencies {
                 implementation(libs.kotest.runnerJunit5)
                 implementation(libs.kotest.property)
+                implementation(libs.signum.indispensable)  // Use the correct reference
             }
         }
     }

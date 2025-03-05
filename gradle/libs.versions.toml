@@ -10,6 +10,7 @@ postgresql = "42.7.5"
 spotless = "7.0.2"
 springBoot = "3.4.3"
 testcontainers = "1.20.5"
+indispensable = "3.14.0"
 
 [plugins]
 adarshr-testLogger = { id = "com.adarshr.test-logger", version.ref = "adarshrTestLogger" }
@@ -67,3 +68,4 @@ springdoc-openApiStarterWebMvcUi = "org.springdoc:springdoc-openapi-starter-webm
 testcontainers-junitJupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
+signum-indispensable = { module = "at.asitplus.signum:indispensable", version.ref = "indispensable" }
