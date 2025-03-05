@@ -11,7 +11,7 @@ mapstruct = "1.6.3"
 postgresql = "42.7.5"
 spotless = "7.0.2"
 springBoot = "3.4.3"
-testcontainers = "1.20.5"
+testcontainers = "1.20.6"
 
 [plugins]
 adarshr-testLogger = { id = "com.adarshr.test-logger", version.ref = "adarshrTestLogger" }
