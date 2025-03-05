@@ -2,8 +2,8 @@ import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     id("kotlin-conventions")
-    id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.kotlin.kapt")
+    kotlin("jvm")
+    kotlin("kapt")
     `jvm-test-suite`
 }
 

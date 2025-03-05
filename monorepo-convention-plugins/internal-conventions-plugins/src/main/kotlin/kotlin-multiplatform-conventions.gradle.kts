@@ -2,7 +2,7 @@ import org.gradle.accessors.dm.LibrariesForLibs
 
 plugins {
     id("kotlin-conventions")
-    id("org.jetbrains.kotlin.multiplatform")
+    kotlin("multiplatform")
 }
 
 val libs = the<LibrariesForLibs>()
@@ -26,5 +26,5 @@ kotlin {
 }
 
 tasks.withType<Test>().configureEach {
-   useJUnitPlatform()
+    useJUnitPlatform()
 }
