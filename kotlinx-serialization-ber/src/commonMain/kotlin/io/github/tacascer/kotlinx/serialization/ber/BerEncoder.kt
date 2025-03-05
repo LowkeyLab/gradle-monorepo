@@ -51,16 +51,16 @@ class BerEncoder(private val writer: BerWriter, override val serializersModule: 
             descriptor: SerialDescriptor,
             collectionSize: Int
     ): CompositeEncoder {
-        writer.beginCollection(descriptor.serialName, collectionSize)
+        writer.beginCollection(collectionSize)
         return this
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {
-        writer.endStructure(descriptor.serialName)
+        writer.endStructure()
     }
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeEncoder {
-        writer.beginStructure(descriptor.serialName)
+        writer.beginStructure()
         return this
     }
 }

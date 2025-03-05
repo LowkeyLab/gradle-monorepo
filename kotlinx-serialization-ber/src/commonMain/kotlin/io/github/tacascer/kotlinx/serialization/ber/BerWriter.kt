@@ -74,19 +74,19 @@ class BerWriter {
         buffer.addAll(bytes.toList())
     }
 
-    fun beginStructure(name: String) {
+    fun beginStructure() {
         writeTag(BerTagClass.UNIVERSAL, BerTag.SEQUENCE)
         // Length will be written later
         buffer.add(0x80.toByte()) // Indefinite length form
     }
 
-    fun beginCollection(name: String, size: Int) {
+    fun beginCollection(size: Int) {
         writeTag(BerTagClass.UNIVERSAL, BerTag.SEQUENCE)
         // Length will be written later
         buffer.add(0x80.toByte()) // Indefinite length form
     }
 
-    fun endStructure(name: String) {
+    fun endStructure() {
         // End-of-contents octets
         buffer.add(0x00)
         buffer.add(0x00)

@@ -30,12 +30,12 @@ class BerDecoder(private val reader: BerReader, override val serializersModule: 
     override fun decodeString(): String = reader.readString()
 
     override fun beginStructure(descriptor: SerialDescriptor): CompositeDecoder {
-        reader.beginStructure(descriptor.serialName)
+        reader.beginStructure()
         return this
     }
 
     override fun endStructure(descriptor: SerialDescriptor) {
-        reader.endStructure(descriptor.serialName)
+        reader.endStructure()
     }
 
     override fun decodeElementIndex(descriptor: SerialDescriptor): Int {

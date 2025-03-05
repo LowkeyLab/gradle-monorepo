@@ -125,6 +125,27 @@ class BerReader(private val bytes: ByteArray) {
         require(b1 == 0.toByte() && b2 == 0.toByte()) { "Expected end-of-contents octets" }
     }
 
+    fun beginStructure() {
+        val (tagClass, tag) = readTag()
+        require(tagClass == BerTagClass.UNIVERSAL && tag == BerTag.SEQUENCE) {
+            "Expected SEQUENCE tag"
+        }
+
+        // Check for indefinite length
+        val firstLengthByte = bytes[position++].toInt() and 0xFF
+        require(firstLengthByte == 0x80) { "Expected indefinite length encoding" }
+
+        // Reset element index
+        currentElementIndex = 0
+    }
+
+    fun endStructure() {
+        // Expecting end-of-contents marker
+        val b1 = bytes[position++]
+        val b2 = bytes[position++]
+        require(b1 == 0.toByte() && b2 == 0.toByte()) { "Expected end-of-contents octets" }
+    }
+
     fun decodeElementIndex(elementsCount: Int): Int {
         // Check if we've reached the end-of-contents marker
         if (position + 1 < bytes.size &&
