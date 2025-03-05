@@ -9,8 +9,12 @@ internal abstract class BerPrimitiveBuilder : BerBuilder
 /** BOOLEAN type builder */
 internal class BerBooleanBuilder(private val value: Boolean) : BerPrimitiveBuilder(), BerElement {
     override fun encode(): ByteArray {
-        val content = byteArrayOf(if (value) 0xFF.toByte() else 0x00)
-        return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.BOOLEAN, content)
+        // Direct encoding of boolean value for maximum control
+        return byteArrayOf(
+                0x01.toByte(), // BOOLEAN tag (universal class is 0 in high bits)
+                0x01.toByte(), // Length 1 byte
+                (if (value) 0xFF else 0x00).toByte() // Boolean value (FF for true, 00 for false)
+        )
     }
 
     override fun getTag() = BerTag.BOOLEAN
