@@ -62,30 +62,3 @@ public fun ExplicitlyTagged(tag: ULong, init: BerSequence.() -> Unit): BerTagged
     val seq = Ber.Sequence(init) as BerBuilder
     return BerExplicitlyTaggedBuilder(seq, tag.toLong(), BerTagClass.CONTEXT_SPECIFIC)
 }
-
-/** Makes a tag non-constructed (primitive) */
-public const val CONSTRUCTED = 0
-
-/** Associates a tag class with a tag number */
-public infix fun ULong.withClass(tagClass: BerTagClass): BerTaggingInfo {
-    return BerTaggingInfo(this.toLong(), tagClass)
-}
-
-public infix fun ULong.without(flag: Int): BerTaggingInfo {
-    return BerTaggingInfo(this.toLong(), BerTagClass.UNIVERSAL, constructed = false)
-}
-
-/** Applies an implicit tag to an element */
-public infix fun BerElement.withImplicitTag(tag: BerTaggingInfo): BerTaggedElement {
-    return BerImplicitlyTaggedBuilder(
-            this as BerBuilder,
-            tag.tagNumber,
-            tag.tagClass,
-            tag.constructed
-    )
-}
-
-/** Applies an explicit tag to an element */
-public infix fun BerElement.withExplicitTag(tag: BerTaggingInfo): BerTaggedElement {
-    return BerExplicitlyTaggedBuilder(this as BerBuilder, tag.tagNumber, tag.tagClass)
-}

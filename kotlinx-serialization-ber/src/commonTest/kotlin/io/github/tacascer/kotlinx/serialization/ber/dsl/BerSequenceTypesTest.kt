@@ -1,5 +1,6 @@
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
+// Explicitly import the extension functions to avoid unresolved references
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
@@ -18,8 +19,23 @@ class BerSequenceTypesTest :
 
                 // Verify structure
                 sequence[0] shouldBe 0x30.toByte() // SEQUENCE tag
-                sequence.size shouldBe
-                        6 // 1 byte tag + 1 byte length + 4 bytes content (for BOOL + INT)
+
+                // Fix: Correct size calculation for a SEQUENCE containing BOOLEAN and INTEGER
+                // 1 byte SEQUENCE tag + 1 byte length + 6 bytes content (3 for BOOL + 3 for INT)
+                sequence.size shouldBe 8
+
+                // Additional verification of encoded structure
+                // Format should be: 0x30 0x06 [BOOL encoding] [INT encoding]
+                // BOOL encoding: 0x01 0x01 0xFF
+                // INT encoding: 0x02 0x01 0x2A
+                sequence[0] shouldBe 0x30.toByte() // SEQUENCE tag
+                sequence[1] shouldBe 0x06.toByte() // Length of content (6)
+                sequence[2] shouldBe 0x01.toByte() // BOOLEAN tag
+                sequence[3] shouldBe 0x01.toByte() // BOOLEAN length (1)
+                sequence[4] shouldBe 0xFF.toByte() // BOOLEAN value (true)
+                sequence[5] shouldBe 0x02.toByte() // INTEGER tag
+                sequence[6] shouldBe 0x01.toByte() // INTEGER length (1)
+                sequence[7] shouldBe 0x2A.toByte() // INTEGER value (42)
             }
 
             test("encode nested SEQUENCE structure") {
@@ -95,26 +111,35 @@ class BerSequenceTypesTest :
             }
 
             test("encode IMPLICIT vs EXPLICIT tagging") {
-                // Create a SEQUENCE with one element, using both tagging types
-                val implicit =
+                // Create a string with implicit tagging (should be primitive)
+                val implicitString =
                         (Ber.Utf8String("Test") withImplicitTag
                                         (0uL withClass BerTagClass.CONTEXT_SPECIFIC))
                                 .encode()
 
+                // Create a sequence with implicit tagging (should be constructed)
+                val implicitSeq =
+                        (Ber.Sequence { +Ber.Utf8String("Test") } withImplicitTag
+                                        (0uL withClass BerTagClass.CONTEXT_SPECIFIC))
+                                .encode()
+
+                // Create an explicit tag
                 val explicit =
                         (Ber.Utf8String("Test") withExplicitTag
                                         (0uL withClass BerTagClass.CONTEXT_SPECIFIC))
                                 .encode()
 
                 // Implicit tag replaces the original tag
-                implicit[0] shouldBe 0x80.toByte() // [0] tag
+                implicitString[0] shouldBe 0x80.toByte() // [0] tag (primitive)
+                implicitSeq[0] shouldBe 0xA0.toByte() // [0] tag (constructed)
 
                 // Explicit tag wraps the original element
                 explicit[0] shouldBe 0xA0.toByte() // [0] EXPLICIT with constructed bit
                 explicit[2] shouldBe 0x0C.toByte() // Original UTF8String tag inside
 
                 // Implicit encoding should be shorter since it doesn't include the original tag
-                implicit.size shouldBe (explicit.size - 2) // 2 bytes difference (tag + length)
+                implicitString.size shouldBe
+                        (explicit.size - 2) // 2 bytes difference (tag + length)
             }
 
             test("complex certificate-like structure") {
