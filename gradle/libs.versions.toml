@@ -2,7 +2,7 @@
 adarshrTestLogger = "4.0.0"
 kotest = "5.9.1"
 kotlin = "2.1.10"
-kotlinxSerialization = "1.7.0" # Updated to be compatible with Kotlin 2.1.x
+kotlinxSerialization = "1.7.0"
 kover = "0.9.1"
 liquibase = "4.31.1"
 mapstruct = "1.6.3"
