@@ -11,17 +11,10 @@ kotlin {
     jvmToolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-    
-    targets.configureEach {
-        compilations.configureEach {
-            kotlinOptions {
-                // Apply common Kotlin compiler options for all targets
-                allWarningsAsErrors = true
-                freeCompilerArgs = listOf("-Xcontext-receivers")
-            }
-        }
+    compilerOptions {
+        allWarningsAsErrors = true
     }
-    
+
     // Common source sets configuration
     sourceSets {
         commonTest {
@@ -30,5 +23,4 @@ kotlin {
             }
         }
     }
-
 }
