@@ -201,7 +201,7 @@ class BerRealBuilder(
                     and (BER_REAL_SIGN_BIT_MASK)
             ) or (BER_REAL_FIRST_BIT_MASK)
 
-        // Extract the exponent, subtract the bias, and reset ourselves to be shifted to the right if needed.
+        // Extract the exponent bits and subtract the bias to get the actual exponent
         var exponent =
             ((bits shr IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_BIT_LENGTH).toInt() and IEEE_754_DOUBLE_PRECISION_EXPONENT_MASK) -
                 (IEEE_754_DOUBLE_PRECISION_EXPONENT_BIAS)
@@ -210,18 +210,21 @@ class BerRealBuilder(
         var mantissa =
             (bits and IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_MASK) or (1L shl IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_BIT_LENGTH)
 
-        // First, prepare the exponent to be incremented as many as the number of bits we shift right
+        // Prepare the exponent to be incremented as many as the number of times we divide by 2
         exponent -= 52
         // mantissa must be odd, so we shift right until it is
         while ((mantissa and 1L) == 0L) {
             mantissa = mantissa shr 1
+            // We just divided by 2, so we need to increment the exponent
             exponent++
         }
 
         val exptBytes = exponent.toBigInteger().toByteArray()
         if (exptBytes.size < 3) {
+            // We need to tell how many bytes we are using for the exponent
             byteArray.write(signByte or (exptBytes.size - 1))
         } else {
+            // We need to tell how many bytes we are using for the exponent
             byteArray.write(signByte or 3)
             byteArray.write(exptBytes.size)
         }
