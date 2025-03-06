@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="SonarLintProjectSettings">
+    <option name="bindingEnabled" value="true" />
     <option name="moduleMapping">
       <map>
         <entry key="monorepo-convention-plugins" value="convention-plugins" />
         <entry key="monorepo-convention-plugins.project-convention-plugin" value="monorepo-convention-plugins.convention-build-plugin" />
       </map>
     </option>
+    <option name="projectKey" value="lowkeylab_gradle-monorepo_monorepo-convention-plugins" />
+    <option name="serverId" value="SonarCloud" />
   </component>
 </project>

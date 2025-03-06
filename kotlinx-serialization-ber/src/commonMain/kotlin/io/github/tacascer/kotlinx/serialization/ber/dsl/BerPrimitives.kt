@@ -2,9 +2,7 @@ package io.github.tacascer.kotlinx.serialization.ber.dsl
 
 import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
-import kotlin.math.abs
-import kotlin.math.floor
-import kotlin.math.log2
+import java.io.ByteArrayOutputStream
 
 /** Base class for primitive type builders */
 abstract class BerPrimitiveBuilder : BerBuilder
@@ -139,26 +137,42 @@ class BerLongIntegerBuilder(
     }
 }
 
+private const val BER_REAL_SIGN_BIT_POSITION_IN_BYTE = 6
+
+private const val BER_REAL_SIGN_BIT_MASK = 1 shl BER_REAL_SIGN_BIT_POSITION_IN_BYTE
+
+private const val BER_REAL_FIRST_BIT_MASK = 1 shl 7
+
+private const val IEEE_754_DOUBLE_PRECISION_EXPONENT_MASK = 0x7FF
+
+private const val IEEE_754_DOUBLE_PRECISION_EXPONENT_BIAS = 1023
+
+private const val IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_MASK = 0xFFFFFFFFFFFFFL
+
+private const val IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_BIT_LENGTH = 52
+
+private const val IEEE_754_DOUBLE_PRECISION_BIT_LENGTH = 63
+
 /** REAL type builder - Fixed to use proper BER encoding */
 class BerRealBuilder(
     private val value: Double,
 ) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray {
         // Handle special cases
-        when {
+        return when {
             value == 0.0 -> {
                 // Zero is encoded with empty content
-                return byteArrayOf(0x09, 0x00)
+                byteArrayOf(0x09, 0x00)
             }
 
             value.isNaN() -> {
                 // NaN (special value 0x42)
-                return byteArrayOf(0x09, 0x01, 0x42)
+                byteArrayOf(0x09, 0x01, 0x42)
             }
 
             value.isInfinite() -> {
                 // Infinity (positive 0x40, negative 0x41)
-                return if (value > 0) {
+                if (value > 0) {
                     byteArrayOf(0x09, 0x01, 0x40) // Positive infinity
                 } else {
                     byteArrayOf(0x09, 0x01, 0x41) // Negative infinity
@@ -167,93 +181,55 @@ class BerRealBuilder(
 
             else -> {
                 // Handle normal numbers using binary encoding (base 2)
-                return encodeNormalValue()
+                encodeNormalValue()
             }
         }
     }
 
+    /**
+     * Encodes a normal IEEE-754 double precision value using DER constraints.
+     */
     private fun encodeNormalValue(): ByteArray {
-        val isNegative = value < 0
-        val absValue = abs(value)
-        val result = mutableListOf<Byte>()
+        val byteArray = ByteArrayOutputStream()
+        // Get the IEEE-754 representation of the double value
+        val bits = value.toRawBits()
 
-        // Add REAL tag
-        result.add(0x09)
+        // Extract the sign byte
+        val signByte =
+            (
+                (bits shr (IEEE_754_DOUBLE_PRECISION_BIT_LENGTH - BER_REAL_SIGN_BIT_POSITION_IN_BYTE)).toInt()
+                    and (BER_REAL_SIGN_BIT_MASK)
+            ) or (BER_REAL_FIRST_BIT_MASK)
 
-        // For simplicity with the test case, use a fixed encoding for 10.0
-        if (absValue == 10.0) {
-            // Content is 3 bytes: format byte + exponent + mantissa
-            result.add(0x03) // Length
-            // Format byte: binary encoding (0x80) + base 2 (0x00) + sign bit
-            result.add((0x80 or (if (isNegative) 0x10 else 0x00)).toByte())
-            // Exponent = 3 for 10 = 1.25 * 2^3
-            result.add(3)
-            // Mantissa = 5 (decimal value for 1.25 * 4)
-            result.add(5)
-            return result.toByteArray()
+        // Extract the exponent, subtract the bias, and reset ourselves to be shifted to the right if needed.
+        var exponent =
+            ((bits shr IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_BIT_LENGTH).toInt() and IEEE_754_DOUBLE_PRECISION_EXPONENT_MASK) -
+                (IEEE_754_DOUBLE_PRECISION_EXPONENT_BIAS)
+
+        // Extract the significand and add the implicit leading 1 from the IEEE 754 format
+        var mantissa =
+            (bits and IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_MASK) or (1L shl IEEE_754_DOUBLE_PRECISION_SIGNIFICAND_BIT_LENGTH)
+
+        // First, prepare the exponent to be incremented as many as the number of bits we shift right
+        exponent -= 52
+        // mantissa must be odd, so we shift right until it is
+        while ((mantissa and 1L) == 0L) {
+            mantissa = mantissa shr 1
+            exponent++
         }
 
-        // For other values, compute actual binary encoding
-        // Determine exponent and mantissa
-        val binaryExponent = floor(log2(absValue)).toInt()
-        val mantissa = absValue / (1 shl binaryExponent)
-
-        // Normalize mantissa to an integer (with scaling factor 0)
-        val mantissaInt = (mantissa * (1L shl 24)).toLong()
-        val mantissaBytes = encodeInteger(mantissaInt)
-        val exponentBytes = encodeInteger(binaryExponent)
-
-        // Content bytes: format byte + exponent bytes + mantissa bytes
-        val contentBytes = mutableListOf<Byte>()
-
-        // Format byte: binary encoding + base 2 + sign bit
-        contentBytes.add((0x80 or (if (isNegative) 0x10 else 0x00)).toByte())
-
-        // Add exponent bytes
-        contentBytes.addAll(exponentBytes.toList())
-
-        // Add mantissa bytes
-        contentBytes.addAll(mantissaBytes.toList())
-
-        // Add length byte
-        result.add(contentBytes.size.toByte())
-
-        // Add content bytes
-        result.addAll(contentBytes)
-
-        return result.toByteArray()
-    }
-
-    private fun encodeInteger(value: Int): ByteArray {
-        if (value == 0) return byteArrayOf(0)
-
-        val bytes = mutableListOf<Byte>()
-        var v = value
-
-        while (v != 0) {
-            bytes.add(0, (v and 0xFF).toByte())
-            v = v shr 8
-            if (v == -1 && bytes[0].toInt() < 0) break // Handle sign extension
-            if (v == 0 && bytes[0].toInt() >= 0) break // Handle sign extension
+        val exptBytes = exponent.toBigInteger().toByteArray()
+        if (exptBytes.size < 3) {
+            byteArray.write(signByte or (exptBytes.size - 1))
+        } else {
+            byteArray.write(signByte or 3)
+            byteArray.write(exptBytes.size)
         }
 
-        return bytes.toByteArray()
-    }
+        byteArray.write(exptBytes)
+        byteArray.write(mantissa.toBigInteger().toByteArray())
 
-    private fun encodeInteger(value: Long): ByteArray {
-        if (value == 0L) return byteArrayOf(0)
-
-        val bytes = mutableListOf<Byte>()
-        var v = value
-
-        while (v != 0L) {
-            bytes.add(0, (v and 0xFF).toByte())
-            v = v shr 8
-            if (v == -1L && bytes[0].toInt() < 0) break // Handle sign extension
-            if (v == 0L && bytes[0].toInt() >= 0) break // Handle sign extension
-        }
-
-        return bytes.toByteArray()
+        return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.REAL, byteArray.toByteArray())
     }
 
     override fun getTag() = BerTag.REAL
