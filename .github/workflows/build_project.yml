@@ -3,6 +3,8 @@ on:
     secrets:
       SONAR_TOKEN:
         required: true
+      GRADLE_CONFIG_CACHE_KEY:
+        required: true
 
 permissions: {}
 
