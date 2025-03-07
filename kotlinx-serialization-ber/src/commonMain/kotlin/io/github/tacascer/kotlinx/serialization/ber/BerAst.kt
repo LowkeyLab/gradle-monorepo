@@ -1,7 +1,7 @@
 package io.github.tacascer.kotlinx.serialization.ber
 
 /** Public interface representing a BER element */
-interface BerElement {
+fun interface BerElement {
     /** Encodes this element to a byte array */
     fun encode(): ByteArray
 }
@@ -10,12 +10,16 @@ interface BerElement {
 interface BerSequence : BerElement {
     /** Adds an element to this sequence */
     operator fun BerElement.unaryPlus()
+
+    fun unbounded()
 }
 
 /** Public interface representing a BER set */
 interface BerSet : BerElement {
     /** Adds an element to this set */
     operator fun BerElement.unaryPlus()
+
+    fun unbounded()
 }
 
 /** Public interface representing a BER set of type (sorted set) */

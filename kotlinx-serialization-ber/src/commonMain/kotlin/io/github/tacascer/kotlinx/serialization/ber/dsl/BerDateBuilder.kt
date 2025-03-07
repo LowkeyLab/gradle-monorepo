@@ -1,8 +1,5 @@
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
-import io.github.tacascer.kotlinx.serialization.ber.BerTag
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
-
 /**
  * DATE type builder (non-standard)
  *
@@ -33,8 +30,4 @@ class BerDateBuilder(
 
         return result.toByteArray()
     }
-
-    override fun getTag(): BerTag = BerTag.NULL // Placeholder, not actually used
-
-    override fun getTagClass(): BerTagClass = BerTagClass.UNIVERSAL // Placeholder
 }

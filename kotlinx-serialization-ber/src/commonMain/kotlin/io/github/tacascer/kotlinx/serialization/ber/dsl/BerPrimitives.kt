@@ -19,10 +19,6 @@ class BerBooleanBuilder(
             (if (value) 0xFF else 0x00).toByte(), // Boolean value (FF for true, 00 for false)
         )
     }
-
-    override fun getTag() = BerTag.BOOLEAN
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** INTEGER type builder (for Int values) */
@@ -45,10 +41,6 @@ class BerIntegerBuilder(
 
         return result.toByteArray()
     }
-
-    override fun getTag() = BerTag.INTEGER
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeMinimalIntegerValue(value: Int): ByteArray {
         if (value == 0) return byteArrayOf(0)
@@ -101,10 +93,6 @@ class BerLongIntegerBuilder(
 
         return result.toByteArray()
     }
-
-    override fun getTag() = BerTag.INTEGER
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeMinimalIntegerValue(value: Long): ByteArray {
         if (value == 0L) return byteArrayOf(0)
@@ -234,10 +222,6 @@ class BerRealBuilder(
 
         return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.REAL, byteArray.toByteArray())
     }
-
-    override fun getTag() = BerTag.REAL
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** NULL type builder */
@@ -246,10 +230,6 @@ class BerNullBuilder : BerPrimitiveBuilder() {
         // NULL has empty content
         return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.NULL, ByteArray(0))
     }
-
-    override fun getTag() = BerTag.NULL
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** OCTET STRING type builder */
@@ -257,10 +237,6 @@ class BerOctetStringBuilder(
     private val value: ByteArray,
 ) : BerPrimitiveBuilder() {
     override fun encode(): ByteArray = BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.OCTET_STRING, value)
-
-    override fun getTag() = BerTag.OCTET_STRING
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** OBJECT IDENTIFIER type builder */
@@ -278,10 +254,6 @@ class BerObjectIdentifierBuilder(
             encodedOid,
         )
     }
-
-    override fun getTag() = BerTag.OBJECT_IDENTIFIER
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 
     private fun encodeObjectIdentifier(components: List<Int>): ByteArray {
         val result = mutableListOf<Byte>()

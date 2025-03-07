@@ -27,10 +27,6 @@ internal class BerUtcTimeBuilder(
         val content = timeString.encodeToByteArray()
         return BerInternalUtils.encodeBerElement(BerTagClass.UNIVERSAL, BerTag.UTC_TIME, content)
     }
-
-    override fun getTag() = BerTag.UTC_TIME
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }
 
 /** GENERALIZED TIME type builder (YYYYMMDDHHMMSS.sssZ) */
@@ -73,8 +69,4 @@ internal class BerGeneralizedTimeBuilder(
             content,
         )
     }
-
-    override fun getTag() = BerTag.GENERALIZED_TIME
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
 }

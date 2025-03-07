@@ -1,10 +1,27 @@
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
+import io.github.tacascer.kotlinx.serialization.ber.BerElement
 import io.github.tacascer.kotlinx.serialization.ber.BerSequence
 import io.github.tacascer.kotlinx.serialization.ber.BerSet
 import io.github.tacascer.kotlinx.serialization.ber.BerSetOf
 import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+
+/** Base class for constructed BER elements */
+internal abstract class BerConstructedBuilder : BerBuilder {
+    val children = mutableListOf<BerElement>()
+    var useUnboundedLength = false
+
+    /** Add a child builder */
+    operator fun BerBuilder.unaryPlus() {
+        children.add(this)
+    }
+
+    /** Enable unbounded length encoding */
+    fun unbounded() {
+        useUnboundedLength = true
+    }
+}
 
 /** SEQUENCE type builder */
 internal class BerSequenceBuilder :
@@ -19,12 +36,13 @@ internal class BerSequenceBuilder :
             BerTagClass.UNIVERSAL,
             BerTag.SEQUENCE,
             childrenBytes.toByteArray(),
+            useUnboundedLength,
         )
     }
 
-    override fun getTag() = BerTag.SEQUENCE
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
+    override operator fun BerElement.unaryPlus() {
+        children.add(this)
+    }
 }
 
 /** SET type builder */
@@ -40,12 +58,13 @@ internal class BerSetBuilder :
             BerTagClass.UNIVERSAL,
             BerTag.SET,
             childrenBytes.toByteArray(),
+            useUnboundedLength,
         )
     }
 
-    override fun getTag() = BerTag.SET
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
+    override operator fun BerElement.unaryPlus() {
+        children.add(this)
+    }
 }
 
 /** SET OF type builder (sorted set) */
@@ -78,10 +97,11 @@ internal class BerSetOfBuilder :
             BerTagClass.UNIVERSAL,
             BerTag.SET,
             childrenBytes.toByteArray(),
+            useUnboundedLength,
         )
     }
 
-    override fun getTag() = BerTag.SET
-
-    override fun getTagClass() = BerTagClass.UNIVERSAL
+    override operator fun BerElement.unaryPlus() {
+        children.add(this)
+    }
 }

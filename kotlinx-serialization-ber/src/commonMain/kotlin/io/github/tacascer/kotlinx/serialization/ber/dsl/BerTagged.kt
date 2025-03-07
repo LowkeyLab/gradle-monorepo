@@ -1,6 +1,5 @@
 package io.github.tacascer.kotlinx.serialization.ber.dsl
 
-import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
 
@@ -41,13 +40,6 @@ internal class BerImplicitlyTaggedBuilder(
         // Create new element with our tag but the inner content
         return BerInternalUtils.encodeBerElement(tagClass, tagNumber, constructed, contentBytes)
     }
-
-    override fun getTag(): BerTag {
-        // Using custom tag number, not a standard BerTag enum value
-        return BerTag.NULL // This is a placeholder
-    }
-
-    override fun getTagClass(): BerTagClass = tagClass
 }
 
 /** Builder for explicitly tagged elements */
@@ -64,11 +56,4 @@ internal class BerExplicitlyTaggedBuilder(
         // Create new element with our tag and the entire inner element as content
         return BerInternalUtils.encodeBerElement(tagClass, tagNumber, true, innerBytes)
     }
-
-    override fun getTag(): BerTag {
-        // Using custom tag number, not a standard BerTag enum value
-        return BerTag.NULL // This is a placeholder
-    }
-
-    override fun getTagClass(): BerTagClass = tagClass
 }

@@ -4,7 +4,6 @@ import io.github.tacascer.kotlinx.serialization.ber.BerElement
 import io.github.tacascer.kotlinx.serialization.ber.BerSequence
 import io.github.tacascer.kotlinx.serialization.ber.BerSet
 import io.github.tacascer.kotlinx.serialization.ber.BerSetOf
-import io.github.tacascer.kotlinx.serialization.ber.BerTag
 import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
 import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
 import kotlinx.datetime.Instant
@@ -56,21 +55,7 @@ object Ber {
 }
 
 /** Base interface for all BER builders */
-internal interface BerBuilder : BerElement {
-    fun getTag(): BerTag
-
-    fun getTagClass(): BerTagClass
-}
-
-/** Base class for constructed types (SEQUENCE, SET, etc.) */
-internal abstract class BerConstructedBuilder : BerBuilder {
-    protected val children = mutableListOf<BerBuilder>()
-
-    /** Adds a builder as a child of this constructed type */
-    operator fun BerElement.unaryPlus() {
-        children.add(this as BerBuilder)
-    }
-}
+internal interface BerBuilder : BerElement
 
 /** Creates an explicitly tagged element (uses a constructed form with the given tag) */
 fun explicitlyTagged(
