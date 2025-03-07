@@ -1,6 +1,6 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.lowkeylab.ber.BerTagClass
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
@@ -253,7 +253,7 @@ class BerMultiByteEncodingTest :
                             // Add an element with extended tag
                             +(
                                 Ber.int(12345) withImplicitTag
-                                    (100uL withClass BerTagClass.CONTEXT_SPECIFIC)
+                                    (100uL withClass io.github.lowkeylab.ber.BerTagClass.CONTEXT_SPECIFIC)
                             )
 
                             // Add a large content element
@@ -263,7 +263,7 @@ class BerMultiByteEncodingTest :
                             +Ber.sequence {
                                 +(
                                     Ber.utf8String("Deeply Nested") withImplicitTag
-                                        (2000uL withClass BerTagClass.PRIVATE)
+                                        (2000uL withClass io.github.lowkeylab.ber.BerTagClass.PRIVATE)
                                 )
                             }
                         }.encode()

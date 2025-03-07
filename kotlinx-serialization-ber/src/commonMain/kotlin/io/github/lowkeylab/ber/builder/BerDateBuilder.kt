@@ -1,4 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
 /**
  * DATE type builder (non-standard)

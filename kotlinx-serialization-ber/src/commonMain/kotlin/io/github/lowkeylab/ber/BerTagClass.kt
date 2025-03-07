@@ -1,4 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber
+package io.github.lowkeylab.ber
 
 /**
  * ASN.1 BER/DER tag classes (X.690) The tag class is encoded in the high 2 bits of the tag byte.

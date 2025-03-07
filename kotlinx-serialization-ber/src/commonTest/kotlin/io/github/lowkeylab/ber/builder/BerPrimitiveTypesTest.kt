@@ -1,4 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
