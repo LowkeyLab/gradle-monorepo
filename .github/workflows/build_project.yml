@@ -18,6 +18,8 @@ jobs:
           distribution: temurin
           java-version: ${{ vars.JAVA_VERSION }}
       - uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
