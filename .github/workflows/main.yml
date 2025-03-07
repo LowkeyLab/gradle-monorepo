@@ -34,7 +34,6 @@ jobs:
           FILTER_REGEX_EXCLUDE: .*CHANGELOG.md|.*gradlew.* # Ignore generated files
           VALIDATE_JSCPD: false # Disable JSCPD validation
 
-
   submit-dependencies:
     runs-on: ubuntu-latest
     steps:
