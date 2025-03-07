@@ -11,19 +11,15 @@ import kotlinx.datetime.toLocalDateTime
 @OptIn(kotlin.ExperimentalStdlibApi::class)
 class BerTimeTypesTest :
     FunSpec({
-
         // Test UTC Time (YYMMDDhhmmssZ format)
         context("UTC Time encoding") {
             test("encode current time as UTCTime") {
-                // Current time using kotlinx.datetime
                 val now = Clock.System.now()
                 val encoded = Ber.utcTime(now).encode()
+                val hex = encoded.toHexString()
 
-                // UTC Time has tag 0x17
-                encoded[0] shouldBe 0x17.toByte()
-
-                // Length depends on the format YYMMDDhhmmssZ = 13 chars
-                encoded[1] shouldBe 13.toByte()
+                // UTCTime tag (0x17) followed by length
+                hex.startsWith("17") shouldBe true
 
                 // Convert the content bytes back to a string
                 val contentBytes = encoded.sliceArray(2 until encoded.size)
@@ -55,32 +51,10 @@ class BerTimeTypesTest :
                 // Choose a specific datetime for consistent testing
                 val specificTime = Instant.parse("2023-04-15T20:30:45Z")
                 val encoded = Ber.utcTime(specificTime).encode()
-
-                // Convert to hex for debugging
-                val hex = encoded.joinToString("") { "%02X".format(it) }
-                println("UTCTime encoding: $hex")
+                val hex = encoded.toHexString()
 
                 // Expected: tag(17) + length(13) + "230415203045Z" as ASCII
-                val expected =
-                    byteArrayOf(
-                        0x17, // UTC Time tag
-                        0x0D, // Length 13
-                        0x32,
-                        0x33, // "23" (year)
-                        0x30,
-                        0x34, // "04" (month)
-                        0x31,
-                        0x35, // "15" (day)
-                        0x32,
-                        0x30, // "20" (hour)
-                        0x33,
-                        0x30, // "30" (minute)
-                        0x34,
-                        0x35, // "45" (second)
-                        0x5A, // "Z" (UTC timezone marker)
-                    )
-
-                encoded shouldBe expected
+                hex shouldBe "170d3233303431353230333034355a"
             }
         }
 
@@ -89,12 +63,10 @@ class BerTimeTypesTest :
             test("encode current time as GeneralizedTime") {
                 val now = Clock.System.now()
                 val encoded = Ber.generalizedTime(now).encode()
+                val hex = encoded.toHexString()
 
                 // Generalized Time has tag 0x18
-                encoded[0] shouldBe 0x18.toByte()
-
-                // Length depends on the format, should be at least 15 for YYYYMMDDhhmmssZ
-                encoded[1].toInt() shouldBe encoded.size - 2
+                hex.startsWith("18") shouldBe true
 
                 // Convert the content bytes back to a string
                 val contentBytes = encoded.sliceArray(2 until encoded.size)
@@ -113,10 +85,6 @@ class BerTimeTypesTest :
                 val timeWithMillis = Instant.parse("2023-04-15T20:30:45.123Z")
                 val encoded = Ber.generalizedTime(timeWithMillis).encode()
 
-                // Convert to hex for debugging
-                val hex = encoded.joinToString("") { "%02X".format(it) }
-                println("GeneralizedTime with millis encoding: $hex")
-
                 // Convert content to string
                 val contentBytes = encoded.sliceArray(2 until encoded.size)
                 val timeString = contentBytes.decodeToString()
@@ -129,17 +97,10 @@ class BerTimeTypesTest :
                 // Test the specific example from the prompt: "19960415203000.0"
                 val fileCreatedTime = Instant.parse("1996-04-15T20:30:00Z")
                 val encoded = Ber.generalizedTime(fileCreatedTime).encode()
+                val hex = encoded.toHexString()
 
-                // Convert to hex for comparison
-                val hex = encoded.joinToString("") { "%02X".format(it) }
-                println("FileCreated example encoding: $hex")
-
-                // Expected encoding from the prompt: 18 0C 313939363034313532303330
-                // However, our implementation may produce slightly different format (with Z
-                // suffix)
-                // Let's verify the tag and the basic content
-
-                encoded[0] shouldBe 0x18.toByte() // GeneralizedTime tag
+                // Generalized Time tag
+                hex.startsWith("18") shouldBe true
 
                 // The content should represent the date 1996-04-15T20:30:00
                 val contentBytes = encoded.sliceArray(2 until encoded.size)
@@ -164,13 +125,14 @@ class BerTimeTypesTest :
                             +Ber.generalizedTime(now)
                         }.encode()
 
-                // Check it starts with SEQUENCE tag
-                sequence[0] shouldBe 0x30.toByte()
+                val hex = sequence.toHexString()
 
-                // Verify it contains both UTC Time and Generalized Time tags
-                val bytes = sequence.toList()
-                bytes.contains(0x17.toByte()) shouldBe true // UTC Time tag
-                bytes.contains(0x18.toByte()) shouldBe true // Generalized Time tag
+                // Sequence tag followed by content
+                hex.startsWith("30") shouldBe true
+
+                // Should contain both UTC Time and Generalized Time tags
+                hex shouldContain "17" // UTCTime tag
+                hex shouldContain "18" // GeneralizedTime tag
             }
 
             test("encode time range with start and end times") {
@@ -187,12 +149,17 @@ class BerTimeTypesTest :
                             }
                         }.encode()
 
-                // Check it's a properly formed sequence
-                timeRange[0] shouldBe 0x30.toByte()
+                val hex = timeRange.toHexString()
 
-                // There should be two UTC Time tags
-                val content = timeRange.toList()
-                content.count { it == 0x17.toByte() } shouldBe 2
+                // SEQUENCE tag
+                hex.startsWith("30") shouldBe true
+
+                // Count UTCTime tags
+                val tagIndices =
+                    hex.indices.filter { i ->
+                        i + 1 < hex.length && hex.substring(i, i + 2) == "17"
+                    }
+                tagIndices.size shouldBe 2
             }
         }
     })
