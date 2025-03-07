@@ -1,10 +1,13 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     alias(libs.plugins.sonarqube)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.vanniktech.mavenPublish)
     id("kotlin-multiplatform-conventions")
 }
 
-group = "io.github.tacascer.kotlinx.serialization"
+group = "io.github.lowkeylab"
 version = "0.1.0" // x-release-please-version
 
 kotlin {
@@ -31,6 +34,34 @@ kotlin {
     }
 }
 
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+    pom {
+        name.set("Kotlinx Serialization BER")
+        description.set("A Kotlin multiplatform library for encoding and decoding BER (Basic Encoding Rules) data.")
+        url = "https://github.com/LowkeyLab/gradle-monorepo"
+        licenses {
+            license {
+                name = "Affero GPL v3.0"
+                url = "https://opensource.org/licenses/AGPL-3.0"
+            }
+        }
+        developers {
+            developer {
+                id.set("tacascer")
+                name.set("Tim Tran")
+                url.set("https://github.com/tacascer")
+            }
+        }
+        scm {
+            url.set("https://github.com/LowkeyLab/gradle-monorepo")
+            connection.set("scm:git:git@github.com:LowkeyLab/gradle-monorepo.git")
+            developerConnection.set("scm:git:git@github.com:LowkeyLab/gradle-monorepo.git")
+        }
+    }
+}
+
 sonar {
     properties {
         property("sonar.projectKey", "lowkeylab_gradle-monorepo_kotlinx-serialization-ber")
@@ -52,4 +83,8 @@ tasks.sonar {
 
 tasks.checkCI {
     dependsOn(tasks.sonar)
+}
+
+tasks.releaseCI {
+    dependsOn(tasks.named("publishAndReleaseToMavenCentral"))
 }
