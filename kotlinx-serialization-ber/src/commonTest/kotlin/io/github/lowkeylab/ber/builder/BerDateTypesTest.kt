@@ -2,8 +2,9 @@ package io.github.lowkeylab.ber.builder
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
-@OptIn(kotlin.ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 class BerDateTypesTest :
     FunSpec({
         test("encode DATE value 2012-12-21") {
@@ -13,31 +14,10 @@ class BerDateTypesTest :
             // Encode using our custom DATE builder
             val encoded = Ber.date(endOfTime).encode()
 
-            // Expected bytes: 1F 1F 08 32 30 31 32 31 32 32 31
-            val expected =
-                byteArrayOf(
-                    0x1F,
-                    0x1F, // Tag for DATE (31 in extended form)
-                    0x08, // Length of content (8 bytes)
-                    0x32,
-                    0x30,
-                    0x31,
-                    0x32, // ASCII for "2012"
-                    0x31,
-                    0x32,
-                    0x32,
-                    0x31, // ASCII for "1221"
-                )
+            // Expected hex representation of DATE encoding
+            val expectedHex = "1f1f083230313231323231"
 
-            // Convert to hex strings for easier debugging
-            val encodedHex = encoded.joinToString("") { "%02X".format(it) }
-            val expectedHex = expected.joinToString("") { "%02X".format(it) }
-
-            println("Encoded: $encodedHex")
-            println("Expected: $expectedHex")
-
-            // Verify the encoded bytes match the expected bytes
-            encoded shouldBe expected
+            encoded.toHexString() shouldBe expectedHex
         }
 
         test("encode DATE value and include in SEQUENCE") {
@@ -49,27 +29,22 @@ class BerDateTypesTest :
                         +Ber.printableString("End of Time")
                     }.encode()
 
+            val sequenceHex = sequence.toHexString()
+
             // Verify it starts with a SEQUENCE tag
-            sequence[0] shouldBe 0x30.toByte() // SEQUENCE tag
+            sequenceHex.startsWith("30") shouldBe true
 
             // Verify the DATE element is inside with tag 1F 1F
-            val dateTagPosition =
-                sequence.indexOfSequence(byteArrayOf(0x1F.toByte(), 0x1F.toByte()))
-            dateTagPosition shouldBe
-                2 // Should be at position 2 (after SEQUENCE tag and length)
+            sequenceHex shouldContain "1f1f" // DATE tag
+
+            // Check position of DATE tag in the hex string (position 2 in bytes = position 4 in hex)
+            val dateTagPosition = sequenceHex.indexOf("1f1f")
+            dateTagPosition shouldBe 4 // After SEQUENCE tag and length
 
             // Verify the content length for DATE is 8
-            sequence[dateTagPosition + 2] shouldBe 0x08.toByte()
+            sequenceHex.substring(dateTagPosition + 4, dateTagPosition + 6) shouldBe "08"
+
+            // Verify date content is included
+            sequenceHex shouldContain "3230313231323231" // "20121221" in hex
         }
     })
-
-// Helper function to find a sequence of bytes within another byte array
-fun ByteArray.indexOfSequence(sequence: ByteArray): Int {
-    outer@ for (i in 0..this.size - sequence.size) {
-        for (j in sequence.indices) {
-            if (this[i + j] != sequence[j]) continue@outer
-        }
-        return i
-    }
-    return -1
-}
