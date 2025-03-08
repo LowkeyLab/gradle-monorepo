@@ -23,7 +23,7 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 littlerobots-versionCatalogUpdate = "nl.littlerobots.version-catalog-update:0.8.5"
 sonarqube = "org.sonarqube:6.0.1.5171"
-vanniktech-mavenPublish = "com.vanniktech.maven.publish:0.31.0-rc2"
+vanniktech-mavenPublish = "com.vanniktech.maven.publish:0.31.0"
 
 [libraries]
 adarshr-testLogger-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "adarshrTestLogger" }
