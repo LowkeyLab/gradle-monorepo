@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "com.github.lowkeylab"
-version = "0.0.1" // x-release-please-version
+version = "1.0.0" // x-release-please-version
 
 dependencies {
     implementation(libs.gavlyukovskiy.datasourceProxy)
