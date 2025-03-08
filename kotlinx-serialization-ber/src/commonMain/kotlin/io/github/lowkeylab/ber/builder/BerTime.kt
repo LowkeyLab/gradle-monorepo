@@ -1,8 +1,8 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerElement
-import io.github.tacascer.kotlinx.serialization.ber.BerTag
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.lowkeylab.ber.BerElement
+import io.github.lowkeylab.ber.BerTag
+import io.github.lowkeylab.ber.BerTagClass
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

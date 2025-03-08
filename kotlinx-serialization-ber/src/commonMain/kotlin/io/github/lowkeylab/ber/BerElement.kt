@@ -1,4 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber
+package io.github.lowkeylab.ber
 
 /** Public interface representing a BER element */
 fun interface BerElement {

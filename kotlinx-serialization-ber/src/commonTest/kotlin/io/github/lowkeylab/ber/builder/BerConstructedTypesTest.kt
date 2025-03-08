@@ -1,6 +1,6 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.lowkeylab.ber.BerTagClass
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain

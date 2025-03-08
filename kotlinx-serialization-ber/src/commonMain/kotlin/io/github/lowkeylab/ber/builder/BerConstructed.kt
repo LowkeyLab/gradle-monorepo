@@ -1,11 +1,11 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerElement
-import io.github.tacascer.kotlinx.serialization.ber.BerSequence
-import io.github.tacascer.kotlinx.serialization.ber.BerSet
-import io.github.tacascer.kotlinx.serialization.ber.BerSetOf
-import io.github.tacascer.kotlinx.serialization.ber.BerTag
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
+import io.github.lowkeylab.ber.BerElement
+import io.github.lowkeylab.ber.BerSequence
+import io.github.lowkeylab.ber.BerSet
+import io.github.lowkeylab.ber.BerSetOf
+import io.github.lowkeylab.ber.BerTag
+import io.github.lowkeylab.ber.BerTagClass
 
 /** Base class for constructed BER elements */
 internal abstract class BerConstructedBuilder : BerBuilder {

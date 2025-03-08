@@ -1,4 +1,4 @@
-package io.github.tacascer.kotlinx.serialization.ber
+package io.github.lowkeylab.ber
 
 /** ASN.1 BER/DER Universal tag values (X.690) */
 enum class BerTag(

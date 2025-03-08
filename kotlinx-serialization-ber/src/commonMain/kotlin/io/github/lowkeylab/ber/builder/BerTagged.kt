@@ -1,7 +1,7 @@
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
-import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
+import io.github.lowkeylab.ber.BerTagClass
+import io.github.lowkeylab.ber.BerTaggedElement
 
 /** Builder for implicitly tagged elements */
 internal class BerImplicitlyTaggedBuilder(

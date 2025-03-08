@@ -1,10 +1,10 @@
 /** Contains all tagging-related functions and constants for the BER DSL. */
-package io.github.tacascer.kotlinx.serialization.ber.dsl
+package io.github.lowkeylab.ber.builder
 
-import io.github.tacascer.kotlinx.serialization.ber.BerElement
-import io.github.tacascer.kotlinx.serialization.ber.BerTagClass
-import io.github.tacascer.kotlinx.serialization.ber.BerTaggedElement
-import io.github.tacascer.kotlinx.serialization.ber.BerTaggingInfo
+import io.github.lowkeylab.ber.BerElement
+import io.github.lowkeylab.ber.BerTagClass
+import io.github.lowkeylab.ber.BerTaggedElement
+import io.github.lowkeylab.ber.BerTaggingInfo
 
 /** Flag to indicate a tag should be primitive (not constructed) */
 const val PRIMITIVE = 0
