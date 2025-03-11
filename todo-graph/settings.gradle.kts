@@ -1,5 +1,8 @@
 rootProject.name = "todo-graph"
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+
+plugins {
+    id("io.github.tacascer.monorepo.settings-convention")
+}
 
 dependencyResolutionManagement {
     repositories {
@@ -31,5 +34,7 @@ dependencyResolutionManagement {
         }
     }
 }
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":composeApp")
