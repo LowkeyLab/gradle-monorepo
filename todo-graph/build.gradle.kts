@@ -9,5 +9,9 @@ plugins {
 }
 
 val checkCI by tasks.registering {
-    
+
+}
+
+val check by tasks.registering {
+
 }
