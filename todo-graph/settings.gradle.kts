@@ -32,6 +32,4 @@ dependencyResolutionManagement {
     }
 }
 
-include("internal-conventions-plugins")
-include("settings-convention-plugin")
 include(":composeApp")
