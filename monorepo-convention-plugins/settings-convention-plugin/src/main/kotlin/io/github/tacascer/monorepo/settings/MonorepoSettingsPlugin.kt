@@ -42,7 +42,8 @@ class MonorepoSettingsPlugin : Plugin<Settings> {
         // Create CI task
         project.tasks.register(task.ciTaskName) { t ->
             t.group = CI_GROUP_NAME
-            t.description = "Run ${task.ciTaskName} in this project, all subprojects, and included builds"
+            t.description =
+                "Run ${task.ciTaskName} in this project, all subprojects, and included builds"
             t.dependsOn(task.developerName)
             t.dependsOn(project.subprojects.map { "${it.path}:${task.ciTaskName}" })
             t.dependsOn(project.gradle.includedBuilds.map { it.task(":${task.ciTaskName}") })

@@ -1,7 +1,18 @@
 rootProject.name = "todo-graph"
 
-plugins {
-    id("io.github.tacascer.monorepo.settings-convention")
+pluginManagement {
+    includeBuild("../monorepo-convention-plugins")
+    repositories {
+        google {
+            mavenContent {
+                includeGroupAndSubgroups("androidx")
+                includeGroupAndSubgroups("com.android")
+                includeGroupAndSubgroups("com.google")
+            }
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
 }
 
 dependencyResolutionManagement {
@@ -20,19 +31,7 @@ dependencyResolutionManagement {
             from(files("../gradle/libs.versions.toml"))
         }
     }
-    pluginManagement {
-        repositories {
-            google {
-                mavenContent {
-                    includeGroupAndSubgroups("androidx")
-                    includeGroupAndSubgroups("com.android")
-                    includeGroupAndSubgroups("com.google")
-                }
-            }
-            mavenCentral()
-            gradlePluginPortal()
-        }
-    }
+
 }
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
