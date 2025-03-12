@@ -1,3 +1,7 @@
+plugins {
+    id("monorepo-conventions")
+}
+
 group = "io.github.lowkeylab"
 
 description =

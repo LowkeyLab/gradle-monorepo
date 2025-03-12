@@ -25,7 +25,7 @@ testing {
 
 gradlePlugin {
     plugins {
-        create("monorepoConventionPlugin") {
+        create("monorepoSettingsPlugin") {
             id = "io.github.tacascer.monorepo.settings-convention"
             implementationClass = "io.github.tacascer.monorepo.settings.MonorepoSettingsPlugin"
         }

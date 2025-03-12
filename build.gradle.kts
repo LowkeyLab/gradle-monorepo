@@ -1,4 +1,5 @@
 plugins {
+    id("monorepo-conventions")
     alias(libs.plugins.benManes.versions)
     alias(libs.plugins.diffplug.spotless)
     alias(libs.plugins.littlerobots.versionCatalogUpdate)
