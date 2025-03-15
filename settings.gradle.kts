@@ -28,6 +28,5 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 includeBuild("pto-scheduler")
 includeBuild("predix")
-includeBuild("bg3-build-optimizer")
 includeBuild("guess-the-word")
 includeBuild("kotlinx-serialization-ber")
