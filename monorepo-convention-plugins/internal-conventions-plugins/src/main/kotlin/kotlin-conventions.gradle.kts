@@ -9,6 +9,9 @@ spotless {
     kotlin {
         ktlint()
     }
+    kotlinGradle {
+        ktlint()
+    }
 }
 
 tasks.named("lint") {
