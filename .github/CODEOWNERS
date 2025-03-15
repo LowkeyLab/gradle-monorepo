@@ -1,5 +1,0 @@
-pto-scheduler/  @LowkeyLab/pto-scheduler
-*.gradle.kts    @LowkeyLab/build-eng
-gradle/         @LowkeyLab/build-eng
-.github/        @LowkeyLab/build-eng
-monorepo-convention-plugins/   @LowkeyLab/build-eng
