@@ -23,6 +23,10 @@
     "kotlin-serialization-ber": {
       "release-type": "go",
       "extra-files": ["build.gradle.kts"]
+    },
+    "free-dsl": {
+      "release-type": "go",
+      "extra-files": ["build.gradle.kts"]
     }
   }
 }
