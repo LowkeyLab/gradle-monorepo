@@ -9,7 +9,6 @@ kotlin {
     jvm()
     sourceSets {
         commonMain {
-
         }
     }
 }
