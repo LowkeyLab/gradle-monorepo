@@ -1,5 +1,6 @@
 plugins {
     id("kotlin-multiplatform-conventions")
+    alias(libs.plugins.google.ksp) apply false
 }
 
 group = "com.github.lowkeylab"
@@ -11,6 +12,11 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.google.ksp.symbolProcessingApi)
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation(libs.kotest.assertions.core)
             }
         }
     }
