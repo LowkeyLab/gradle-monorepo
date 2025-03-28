@@ -1,5 +1,6 @@
 plugins {
     id("kotlin-multiplatform-conventions")
+    alias(libs.plugins.google.ksp)
 }
 
 group = "com.github.lowkeylab"
