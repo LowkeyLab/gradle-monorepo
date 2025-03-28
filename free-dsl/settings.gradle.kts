@@ -20,3 +20,4 @@ dependencyResolutionManagement {
 }
 
 include("annotation-processor")
+include("annotation-processor-test")
