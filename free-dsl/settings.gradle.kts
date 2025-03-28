@@ -18,3 +18,5 @@ dependencyResolutionManagement {
         }
     }
 }
+
+include("annotation-processor")
