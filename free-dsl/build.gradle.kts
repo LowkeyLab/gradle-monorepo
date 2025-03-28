@@ -1,6 +1,5 @@
 plugins {
     id("kotlin-multiplatform-conventions")
-    alias(libs.plugins.google.ksp)
 }
 
 group = "com.github.lowkeylab"
@@ -10,6 +9,9 @@ kotlin {
     jvm()
     sourceSets {
         commonMain {
+            dependencies {
+                implementation(libs.google.ksp.symbolProcessingApi)
+            }
         }
     }
 }

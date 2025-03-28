@@ -6,6 +6,7 @@ kotlin = "2.1.20"
 kotlinxDatetime = "0.6.2"
 kotlinxSerialization = "1.8.0"
 kover = "0.9.1"
+ksp = "2.1.20-1.0.32"
 liquibase = "4.31.1"
 mapstruct = "1.6.3"
 postgresql = "42.7.5"
@@ -18,7 +19,7 @@ benManes-versions = "com.github.ben-manes.versions:0.52.0"
 diffplug-spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 gradle-pluginPublish = "com.gradle.plugin-publish:1.3.1"
 gradleup-shadow = "com.gradleup.shadow:8.3.6"
-google-ksp = "com.google.devtools.ksp:2.1.20-1.0.32"
+google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
@@ -48,6 +49,7 @@ mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.re
 ninjaSquad-springmockk = "com.ninja-squad:springmockk:4.0.2"
 oshai-kotlinLoggingJvm = "io.github.oshai:kotlin-logging-jvm:7.0.5"
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresql" }
+google-ksp-symbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 signum-indispensable = { module = "at.asitplus.signum:indispensable", version.ref = "indispensable" }
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
