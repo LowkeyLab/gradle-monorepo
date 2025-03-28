@@ -23,20 +23,20 @@ class FreeDslProcessor(
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.info("FreeDslProcessor: Processing started")
-        
+
         // Find all classes annotated with @FreeDsl
         val symbols = resolver.getSymbolsWithAnnotation(FreeDsl::class.qualifiedName!!)
             .filterIsInstance<KSClassDeclaration>()
             .filter { it.validate() }
             .toList()
-        
+
         if (symbols.isEmpty()) {
             logger.info("FreeDslProcessor: No classes found with @FreeDsl annotation")
             return emptyList()
         }
-        
+
         logger.info("FreeDslProcessor: Found ${symbols.size} classes with @FreeDsl annotation")
-        
+
         // Process each annotated class
         symbols.forEach { classDeclaration ->
             try {
@@ -45,27 +45,31 @@ class FreeDslProcessor(
                 logger.error("FreeDslProcessor: Error processing class ${classDeclaration.simpleName.asString()}: ${e.message}")
             }
         }
-        
+
         // Return symbols that couldn't be processed in this round
         return symbols.filterNot { it.validate() }
     }
-    
+
     private fun processClass(classDeclaration: KSClassDeclaration) {
         val className = classDeclaration.simpleName.asString()
         logger.info("FreeDslProcessor: Processing class $className")
-        
+
         // Check if it's a data class
         if (!classDeclaration.isDataClass()) {
             logger.error("FreeDslProcessor: $className is not a data class. @FreeDsl can only be applied to data classes.")
             return
         }
-        
+
         // Generate DSL builder code
         val dslBuilder = DslBuilder(classDeclaration, codeGenerator, logger)
         dslBuilder.generate()
     }
-    
+
     private fun KSClassDeclaration.isDataClass(): Boolean {
-        return modifiers.any { it.toString() == "data" }
+        // Log all modifiers for debugging
+        logger.info("FreeDslProcessor: Class ${simpleName.asString()} has modifiers: ${modifiers.joinToString()}")
+
+        // Check if the class has the "DATA" modifier (case-insensitive)
+        return modifiers.any { it.toString().equals("data", ignoreCase = true) }
     }
 }
