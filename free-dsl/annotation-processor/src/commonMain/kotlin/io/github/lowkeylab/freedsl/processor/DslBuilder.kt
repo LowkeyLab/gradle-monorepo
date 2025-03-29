@@ -28,6 +28,27 @@ class DslBuilder(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
 ) {
+    companion object {
+        // Kotlin primitive types
+        private const val TYPE_INT = "kotlin.Int"
+        private const val TYPE_LONG = "kotlin.Long"
+        private const val TYPE_DOUBLE = "kotlin.Double"
+        private const val TYPE_FLOAT = "kotlin.Float"
+        private const val TYPE_BOOLEAN = "kotlin.Boolean"
+        private const val TYPE_CHAR = "kotlin.Char"
+        private const val TYPE_BYTE = "kotlin.Byte"
+        private const val TYPE_SHORT = "kotlin.Short"
+
+        // Kotlin non-primitive types
+        private const val TYPE_STRING = "kotlin.String"
+        private const val TYPE_ANY = "kotlin.Any"
+
+        // Kotlin collection types
+        private const val TYPE_LIST = "kotlin.collections.List"
+        private const val TYPE_SET = "kotlin.collections.Set"
+        private const val TYPE_MAP = "kotlin.collections.Map"
+        private const val TYPE_ARRAY = "kotlin.Array"
+    }
     private val className = classDeclaration.simpleName.asString()
     private val packageName = classDeclaration.packageName.asString()
     private val builderClassName = "${className}Builder"
@@ -130,13 +151,32 @@ class DslBuilder(
             // For nullable or parameters with default values, we can use simple var with initializer
             val defaultValue = getDefaultValueCodeBlock(type)
             propertyBuilder.initializer(defaultValue)
+        } else if (!isPrimitiveType(type)) {
+            // For required non-nullable non-primitive types, use lateinit
+            propertyBuilder.addModifiers(com.squareup.kotlinpoet.KModifier.LATEINIT)
         } else {
-            // For required non-nullable parameters, use Delegates.notNull()
+            // For required non-nullable primitive types, use Delegates.notNull()
             val delegateType = Delegates::class.asClassName()
             propertyBuilder.delegate("$delegateType.notNull()")
         }
 
         return propertyBuilder.build()
+    }
+
+    /**
+     * Determines if a type is a primitive type.
+     * 
+     * @param type The KSType to check
+     * @return True if the type is a primitive type, false otherwise
+     */
+    private fun isPrimitiveType(type: KSType): Boolean {
+        val typeName = type.declaration.qualifiedName?.asString() ?: return false
+
+        return when (typeName) {
+            TYPE_INT, TYPE_LONG, TYPE_DOUBLE, TYPE_FLOAT, 
+            TYPE_BOOLEAN, TYPE_CHAR, TYPE_BYTE, TYPE_SHORT -> true
+            else -> false
+        }
     }
 
     /**
@@ -153,13 +193,13 @@ class DslBuilder(
         // Handle primitive types
         val primitiveTypeName =
             when (typeName) {
-                "kotlin.String" -> String::class.asClassName()
-                "kotlin.Int" -> Int::class.asClassName()
-                "kotlin.Long" -> Long::class.asClassName()
-                "kotlin.Double" -> Double::class.asClassName()
-                "kotlin.Float" -> Float::class.asClassName()
-                "kotlin.Boolean" -> Boolean::class.asClassName()
-                "kotlin.Any" -> Any::class.asTypeName()
+                TYPE_STRING -> String::class.asClassName()
+                TYPE_INT -> Int::class.asClassName()
+                TYPE_LONG -> Long::class.asClassName()
+                TYPE_DOUBLE -> Double::class.asClassName()
+                TYPE_FLOAT -> Float::class.asClassName()
+                TYPE_BOOLEAN -> Boolean::class.asClassName()
+                TYPE_ANY -> Any::class.asTypeName()
                 else -> ClassName.bestGuess(typeName)
             }
 
@@ -193,16 +233,16 @@ class DslBuilder(
         when (type.nullability) {
             Nullability.NULLABLE -> CodeBlock.of("null")
             else -> {
-                val typeName = type.declaration.qualifiedName?.asString() ?: "Any"
+                val typeName = type.declaration.qualifiedName?.asString() ?: TYPE_ANY
 
                 when {
-                    typeName == "kotlin.String" -> CodeBlock.of("%S", "")
-                    typeName == "kotlin.Int" -> CodeBlock.of("%L", 0)
-                    typeName == "kotlin.Long" -> CodeBlock.of("%LL", 0)
-                    typeName == "kotlin.Double" -> CodeBlock.of("%L", 0.0)
-                    typeName == "kotlin.Float" -> CodeBlock.of("%Lf", 0.0)
-                    typeName == "kotlin.Boolean" -> CodeBlock.of("%L", false)
-                    typeName == "kotlin.collections.List" -> {
+                    typeName == TYPE_STRING -> CodeBlock.of("%S", "")
+                    typeName == TYPE_INT -> CodeBlock.of("%L", 0)
+                    typeName == TYPE_LONG -> CodeBlock.of("%LL", 0)
+                    typeName == TYPE_DOUBLE -> CodeBlock.of("%L", 0.0)
+                    typeName == TYPE_FLOAT -> CodeBlock.of("%Lf", 0.0)
+                    typeName == TYPE_BOOLEAN -> CodeBlock.of("%L", false)
+                    typeName == TYPE_LIST -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -213,7 +253,7 @@ class DslBuilder(
                         CodeBlock.of("emptyList<%T>()", typeArg)
                     }
 
-                    typeName == "kotlin.Array" -> {
+                    typeName == TYPE_ARRAY -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -224,13 +264,13 @@ class DslBuilder(
                         CodeBlock.of("emptyArray<%T>()", typeArg)
                     }
 
-                    typeName == "kotlin.collections.Map" -> {
+                    typeName == TYPE_MAP -> {
                         val keyType = getTypeNameFromKSType(type.arguments[0].type!!.resolve())
                         val valueType = getTypeNameFromKSType(type.arguments[1].type!!.resolve())
                         CodeBlock.of("emptyMap<%T, %T>()", keyType, valueType)
                     }
 
-                    typeName == "kotlin.collections.Set" -> {
+                    typeName == TYPE_SET -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
