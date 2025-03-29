@@ -6,6 +6,7 @@ import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.validate
 import io.github.lowkeylab.freedsl.FreeDsl
 
@@ -18,17 +19,18 @@ import io.github.lowkeylab.freedsl.FreeDsl
 class FreeDslProcessor(
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger,
-    private val options: Map<String, String>
+    private val options: Map<String, String>,
 ) : SymbolProcessor {
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
         logger.info("FreeDslProcessor: Processing started")
 
         // Find all classes annotated with @FreeDsl
-        val symbols = resolver.getSymbolsWithAnnotation(FreeDsl::class.qualifiedName!!)
-            .filterIsInstance<KSClassDeclaration>()
-            .filter { it.validate() }
-            .toList()
+        val symbols =
+            resolver
+                .getSymbolsWithAnnotation(FreeDsl::class.qualifiedName!!)
+                .filterIsInstance<KSClassDeclaration>()
+                .filter { it.validate() }
+                .toList()
 
         if (symbols.isEmpty()) {
             logger.info("FreeDslProcessor: No classes found with @FreeDsl annotation")
@@ -70,6 +72,6 @@ class FreeDslProcessor(
         logger.info("FreeDslProcessor: Class ${simpleName.asString()} has modifiers: ${modifiers.joinToString()}")
 
         // Check if the class has the "DATA" modifier (case-insensitive)
-        return modifiers.any { it.toString().equals("data", ignoreCase = true) }
+        return modifiers.any { it == Modifier.DATA }
     }
 }
