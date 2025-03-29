@@ -12,6 +12,7 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.google.ksp.symbolProcessingApi)
+                implementation(libs.square.kotlinPoet)
             }
         }
         commonTest {
