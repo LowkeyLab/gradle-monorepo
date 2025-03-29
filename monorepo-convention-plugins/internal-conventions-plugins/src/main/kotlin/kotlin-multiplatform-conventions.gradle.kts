@@ -19,12 +19,12 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation(libs.kotest.assertions.core)
+                implementation(kotlin("test"))
             }
         }
         jvmTest {
             dependencies {
-                implementation(libs.kotest.runnerJunit5)
+                implementation(kotlin("test-junit"))
             }
         }
     }
