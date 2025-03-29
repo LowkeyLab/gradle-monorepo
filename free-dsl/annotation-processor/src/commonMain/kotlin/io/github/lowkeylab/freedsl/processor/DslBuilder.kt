@@ -131,7 +131,7 @@ class DslBuilder(
                 .createNewFile(
                     dependencies = dependencies,
                     packageName = packageName,
-                    fileName = "${className}DslBuilder.kt",
+                    fileName = "${className}DslBuilder",
                 ).use { outputStream ->
                     outputStream.writer().use { writer ->
                         fileSpec.writeTo(writer)

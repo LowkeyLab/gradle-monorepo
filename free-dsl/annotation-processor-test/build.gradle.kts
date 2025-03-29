@@ -13,7 +13,6 @@ kotlin {
             dependencies {
                 implementation(project(":annotation-processor"))
             }
-            kotlin.srcDir("${project.projectDir}/src/generated/kotlin")
         }
         commonTest {
             dependencies {
