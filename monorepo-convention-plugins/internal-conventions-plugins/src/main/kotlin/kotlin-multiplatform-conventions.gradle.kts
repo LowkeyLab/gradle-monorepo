@@ -22,9 +22,10 @@ kotlin {
                 implementation(libs.kotest.assertions.core)
             }
         }
+        jvmTest {
+            dependencies {
+                implementation(libs.kotest.runnerJunit5)
+            }
+        }
     }
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }

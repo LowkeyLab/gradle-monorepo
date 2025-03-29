@@ -14,11 +14,6 @@ kotlin {
                 implementation(project(":annotation-processor"))
             }
         }
-        commonTest {
-            dependencies {
-                implementation(libs.kotest.assertions.core)
-            }
-        }
     }
 }
 
