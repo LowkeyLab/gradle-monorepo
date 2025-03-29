@@ -49,6 +49,7 @@ class DslBuilder(
         private const val TYPE_MAP = "kotlin.collections.Map"
         private const val TYPE_ARRAY = "kotlin.Array"
     }
+
     private val className = classDeclaration.simpleName.asString()
     private val packageName = classDeclaration.packageName.asString()
     private val builderClassName = "${className}Builder"
@@ -85,6 +86,43 @@ class DslBuilder(
                 if (isNestedBuilderCandidate(parameter)) {
                     val nestedBuilderMethod = generateNestedBuilderMethodSpec(parameter)
                     builderClass.addFunction(nestedBuilderMethod)
+                }
+            }
+
+            // Add extension functions for list properties to support unary plus
+            constructorParameters.forEach { parameter ->
+                val type = parameter.type.resolve()
+                val typeName = type.declaration.qualifiedName?.asString()
+                if (typeName == TYPE_LIST) {
+                    // Get the parameter name
+                    val name = parameter.name?.asString() ?: return@forEach
+
+                    // Get the type argument of the list
+                    val typeArg =
+                        type.arguments
+                            .firstOrNull()
+                            ?.type
+                            ?.resolve() ?: return@forEach
+                    val typeArgName = getTypeNameFromKSType(typeArg)
+
+                    // Create a function to add an item to the list
+                    // Try to singularize the name (simple heuristic)
+                    val functionName =
+                        if (name.endsWith("s")) {
+                            name.substring(0, name.length - 1).decapitalize()
+                        } else {
+                            name.decapitalize() + "Item"
+                        }
+
+                    val addFunction =
+                        FunSpec
+                            .builder(functionName)
+                            .addParameter("value", typeArgName)
+                            .addStatement("(%N as MutableList<%T>).add(value)", name, typeArgName)
+                            .build()
+
+                    // Add the function to the builder class
+                    builderClass.addFunction(addFunction)
                 }
             }
 
@@ -130,6 +168,17 @@ class DslBuilder(
     }
 
     /**
+     * Determines if a type is a collection type.
+     *
+     * @param type The KSType to check
+     * @return True if the type is a collection type, false otherwise
+     */
+    private fun isCollectionType(type: KSType): Boolean {
+        val typeName = type.declaration.qualifiedName?.asString() ?: return false
+        return typeName == TYPE_LIST || typeName == TYPE_SET || typeName == TYPE_MAP || typeName == TYPE_ARRAY
+    }
+
+    /**
      * Generates a PropertySpec for a constructor parameter.
      *
      * @param parameter The constructor parameter
@@ -141,23 +190,43 @@ class DslBuilder(
         val typeName = getTypeNameFromKSType(type)
         val isNullable = type.nullability == Nullability.NULLABLE
         val hasDefaultValue = parameter.hasDefault
+        val isCollection = isCollectionType(type)
+        val isList = type.declaration.qualifiedName?.asString() == TYPE_LIST
 
         val propertyBuilder =
             PropertySpec
                 .builder(name, typeName)
                 .mutable(true) // Make it a var
 
-        if (isNullable || hasDefaultValue) {
-            // For nullable or parameters with default values, we can use simple var with initializer
-            val defaultValue = getDefaultValueCodeBlock(type)
-            propertyBuilder.initializer(defaultValue)
-        } else if (!isPrimitiveType(type)) {
-            // For required non-nullable non-primitive types, use lateinit
-            propertyBuilder.addModifiers(com.squareup.kotlinpoet.KModifier.LATEINIT)
-        } else {
-            // For required non-nullable primitive types, use Delegates.notNull()
-            val delegateType = Delegates::class.asClassName()
-            propertyBuilder.delegate("$delegateType.notNull()")
+        when {
+            isCollection && isList -> {
+                // For List types, initialize with a mutable list
+                val typeArg =
+                    getTypeNameFromKSType(
+                        type.arguments
+                            .first()
+                            .type!!
+                            .resolve(),
+                    )
+                propertyBuilder.initializer("mutableListOf<%T>()", typeArg)
+            }
+
+            isNullable || hasDefaultValue -> {
+                // For nullable or parameters with default values, we can use simple var with initializer
+                val defaultValue = getDefaultValueCodeBlock(type)
+                propertyBuilder.initializer(defaultValue)
+            }
+
+            !isPrimitiveType(type) -> {
+                // For required non-nullable non-primitive types, use lateinit
+                propertyBuilder.addModifiers(com.squareup.kotlinpoet.KModifier.LATEINIT)
+            }
+
+            else -> {
+                // For required non-nullable primitive types, use Delegates.notNull()
+                val delegateType = Delegates::class.asClassName()
+                propertyBuilder.delegate("$delegateType.notNull()")
+            }
         }
 
         return propertyBuilder.build()
@@ -165,7 +234,7 @@ class DslBuilder(
 
     /**
      * Determines if a type is a primitive type.
-     * 
+     *
      * @param type The KSType to check
      * @return True if the type is a primitive type, false otherwise
      */
@@ -173,8 +242,10 @@ class DslBuilder(
         val typeName = type.declaration.qualifiedName?.asString() ?: return false
 
         return when (typeName) {
-            TYPE_INT, TYPE_LONG, TYPE_DOUBLE, TYPE_FLOAT, 
-            TYPE_BOOLEAN, TYPE_CHAR, TYPE_BYTE, TYPE_SHORT -> true
+            TYPE_INT, TYPE_LONG, TYPE_DOUBLE, TYPE_FLOAT,
+            TYPE_BOOLEAN, TYPE_CHAR, TYPE_BYTE, TYPE_SHORT,
+            -> true
+
             else -> false
         }
     }
@@ -250,7 +321,7 @@ class DslBuilder(
                                     .type!!
                                     .resolve(),
                             )
-                        CodeBlock.of("emptyList<%T>()", typeArg)
+                        CodeBlock.of("mutableListOf<%T>()", typeArg)
                     }
 
                     typeName == TYPE_ARRAY -> {
