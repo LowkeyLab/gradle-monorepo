@@ -1,14 +1,6 @@
 plugins {
-    id("kotlin-multiplatform-conventions")
+    id("monorepo-conventions")
 }
 
 group = "com.github.lowkeylab"
 version = "0.0.1" // x-release-please-version
-
-kotlin {
-    jvm()
-    sourceSets {
-        commonMain {
-        }
-    }
-}

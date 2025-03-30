@@ -19,12 +19,13 @@ kotlin {
     sourceSets {
         commonTest {
             dependencies {
-                implementation(libs.kotest.assertions.core)
+                implementation(kotlin("test"))
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(kotlin("test-junit"))
             }
         }
     }
-}
-
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
 }
