@@ -86,7 +86,7 @@ The generated code follows Kotlin conventions and best practices for DSL design.
 
 ## Project Structure
 
-```
+```text
 free-dsl/
 ├── build.gradle.kts       # Module build configuration
 └── src/
