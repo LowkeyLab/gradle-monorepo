@@ -2,10 +2,10 @@ package io.github.lowkeylab.freedsl
 
 /**
  * Annotation to mark data classes for which DSL builders should be generated.
- * 
+ *
  * When applied to a data class, a KSP processor will generate an idiomatic Kotlin
  * builder that supports DSL syntax.
- * 
+ *
  * Example usage:
  * ```kotlin
  * @FreeDsl
@@ -14,7 +14,7 @@ package io.github.lowkeylab.freedsl
  *     val age: Int,
  *     val address: Address? = null
  * )
- * 
+ *
  * // Generated DSL usage will look like:
  * val person = person {
  *     name = "John"
@@ -29,4 +29,4 @@ package io.github.lowkeylab.freedsl
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
-public annotation class FreeDsl
+annotation class FreeDsl
