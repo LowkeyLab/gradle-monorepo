@@ -11,7 +11,7 @@ data class Person(
     val age: Int,
     val email: String? = null,
     val address: Address? = null,
-    val tags: List<String> = emptyList()
+    val tags: List<String> = emptyList(),
 )
 
 /**
@@ -22,7 +22,7 @@ data class Address(
     val street: String,
     val city: String,
     val zipCode: String,
-    val country: String = "USA"
+    val country: String = "USA",
 )
 
 /**
@@ -35,5 +35,5 @@ data class Project(
     val owner: Person,
     val contributors: List<Person> = emptyList(),
     val tags: Set<String> = emptySet(),
-    val metadata: Map<String, String> = emptyMap()
+    val metadata: Map<String, String> = emptyMap(),
 )

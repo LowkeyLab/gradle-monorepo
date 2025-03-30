@@ -1,19 +1,19 @@
 package io.github.lowkeylab.freedsl.test
 
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertContentEquals
 
 class PersonDslTest {
-
     @Test
     fun testPersonDslWithRequiredProperties() {
         // Create a Person using the DSL with only required properties
-        val person = person {
-            name = "John Doe"
-            age = 30
-        }
+        val person =
+            person {
+                name = "John Doe"
+                age = 30
+            }
 
         // Verify the properties
         assertEquals("John Doe", person.name)
@@ -26,18 +26,20 @@ class PersonDslTest {
     @Test
     fun testPersonDslWithAllProperties() {
         // Create a Person using the DSL with all properties
-        val person = person {
-            name = "Jane Smith"
-            age = 25
-            email = "jane@example.com"
-            address = address {
-                street = "123 Main St"
-                city = "Anytown"
-                zipCode = "12345"
-                country = "USA"
+        val person =
+            person {
+                name = "Jane Smith"
+                age = 25
+                email = "jane@example.com"
+                address =
+                    address {
+                        street = "123 Main St"
+                        city = "Anytown"
+                        zipCode = "12345"
+                        country = "USA"
+                    }
+                tags = mutableListOf("developer", "kotlin")
             }
-            tags = mutableListOf("developer", "kotlin")
-        }
 
         // Verify the properties
         assertEquals("Jane Smith", person.name)
