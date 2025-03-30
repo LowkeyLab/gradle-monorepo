@@ -123,6 +123,10 @@ class DslBuilder(
 
                     // Add the function to the builder class
                     builderClass.addFunction(addFunction)
+
+                    // Add a block method for the list property
+                    val blockMethod = generateListBlockMethodSpec(parameter)
+                    builderClass.addFunction(blockMethod)
                 }
             }
 
@@ -490,5 +494,59 @@ class DslBuilder(
     private fun String.decapitalize(): String {
         if (isEmpty() || !first().isUpperCase()) return this
         return first().lowercase() + substring(1)
+    }
+
+    /**
+     * Generates a FunSpec for a list block method.
+     *
+     * @param parameter The parameter to generate a list block method for
+     * @return The FunSpec for the list block method
+     */
+    private fun generateListBlockMethodSpec(parameter: KSValueParameter): FunSpec {
+        val name = parameter.name?.asString() ?: throw IllegalArgumentException("Parameter must have a name")
+        val type = parameter.type.resolve()
+
+        // Get the type argument of the list
+        val typeArg =
+            type.arguments
+                .firstOrNull()
+                ?.type
+                ?.resolve() ?: throw IllegalArgumentException("List must have a type argument")
+        val typeArgName = getTypeNameFromKSType(typeArg)
+
+        // Try to singularize the name (simple heuristic)
+        val singularName =
+            if (name.endsWith("s")) {
+                name.substring(0, name.length - 1).decapitalize()
+            } else {
+                name.decapitalize() + "Item"
+            }
+
+        // Create the lambda type for the block parameter
+        val lambdaType =
+            LambdaTypeName.get(
+                returnType = Unit::class.asClassName(),
+            )
+
+        // Create the function
+        return FunSpec
+            .builder(name)
+            .addKdoc("Configure the [$name] property using block syntax.")
+            .addParameter("block", lambdaType)
+            .addCode(
+                """
+                |// Create a temporary scope for adding items to the list
+                |object : Any() {
+                |    // Function to add an item to the list
+                |    fun $singularName(value: %T) {
+                |        $name.add(value)
+                |    }
+                |}.apply {
+                |    block()
+                |}
+                |
+                """.trimMargin(),
+                typeArgName,
+            ).build()
     }
 }
