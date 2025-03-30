@@ -46,7 +46,7 @@ class ProjectDslTest {
                 email = "jane@example.com"
             }
 
-            contributors = listOf(
+            contributors = mutableListOf(
                 person {
                     name = "Alice Johnson"
                     age = 28
@@ -58,9 +58,9 @@ class ProjectDslTest {
                 }
             )
 
-            tags = setOf("kotlin", "dsl", "testing")
+            tags = mutableSetOf("kotlin", "dsl", "testing")
 
-            metadata = mapOf(
+            metadata = mutableMapOf(
                 "version" to "1.0.0",
                 "status" to "active"
             )

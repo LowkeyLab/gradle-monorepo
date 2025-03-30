@@ -36,7 +36,7 @@ class PersonDslTest {
                 zipCode = "12345"
                 country = "USA"
             }
-            tags = listOf("developer", "kotlin")
+            tags = mutableListOf("developer", "kotlin")
         }
 
         // Verify the properties

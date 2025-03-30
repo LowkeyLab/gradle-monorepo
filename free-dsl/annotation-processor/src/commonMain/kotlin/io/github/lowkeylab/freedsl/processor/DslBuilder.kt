@@ -118,7 +118,7 @@ class DslBuilder(
                         FunSpec
                             .builder(functionName)
                             .addParameter("value", typeArgName)
-                            .addStatement("(%N as MutableList<%T>).add(value)", name, typeArgName)
+                            .addStatement("%N.add(value)", name)
                             .build()
 
                     // Add the function to the builder class
@@ -271,6 +271,7 @@ class DslBuilder(
                 TYPE_FLOAT -> Float::class.asClassName()
                 TYPE_BOOLEAN -> Boolean::class.asClassName()
                 TYPE_ANY -> Any::class.asTypeName()
+                TYPE_LIST -> ClassName.bestGuess("kotlin.collections.MutableList")
                 else -> ClassName.bestGuess(typeName)
             }
 
