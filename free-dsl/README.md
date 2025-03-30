@@ -2,8 +2,10 @@
 
 ## Overview
 
-Free-DSL is a Kotlin Multiplatform library that generates idiomatic Kotlin DSL builders for data classes. 
-It uses Kotlin Symbol Processing (KSP) to generate extension functions and builder classes that enable 
+Free-DSL is a Kotlin Multiplatform library that generates idiomatic Kotlin DSL
+builders for data classes.
+It uses Kotlin Symbol Processing (KSP) to generate extension functions and
+builder classes that enable
 a clean, type-safe DSL syntax for constructing instances of your data classes.
 
 ## Features
@@ -49,7 +51,8 @@ data class Address(
 
 ### 3. Build your project
 
-The KSP processor will generate DSL builder code for your annotated data classes.
+The KSP processor will generate DSL builder code for your annotated data
+classes.
 
 ### 4. Use the generated DSL
 
