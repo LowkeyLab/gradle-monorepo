@@ -514,17 +514,11 @@ class DslBuilder(
                 ?.resolve() ?: throw IllegalArgumentException("List must have a type argument")
         val typeArgName = getTypeNameFromKSType(typeArg)
 
-        // Try to singularize the name (simple heuristic)
-        val singularName =
-            if (name.endsWith("s")) {
-                name.substring(0, name.length - 1).decapitalize()
-            } else {
-                name.decapitalize() + "Item"
-            }
-
-        // Create the lambda type for the block parameter
+        // Create the lambda type for the block parameter with the mutable list as receiver
+        val listType = ClassName.bestGuess("kotlin.collections.MutableList").parameterizedBy(typeArgName)
         val lambdaType =
             LambdaTypeName.get(
+                receiver = listType,
                 returnType = Unit::class.asClassName(),
             )
 
@@ -533,20 +527,7 @@ class DslBuilder(
             .builder(name)
             .addKdoc("Configure the [$name] property using block syntax.")
             .addParameter("block", lambdaType)
-            .addCode(
-                """
-                |// Create a temporary scope for adding items to the list
-                |object : Any() {
-                |    // Function to add an item to the list
-                |    fun $singularName(value: %T) {
-                |        $name.add(value)
-                |    }
-                |}.apply {
-                |    block()
-                |}
-                |
-                """.trimMargin(),
-                typeArgName,
-            ).build()
+            .addStatement("$name.apply { block() }")
+            .build()
     }
 }

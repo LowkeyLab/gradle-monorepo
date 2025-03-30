@@ -1,23 +1,24 @@
 package io.github.lowkeylab.freedsl.test
 
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
-import kotlin.test.assertContentEquals
 import kotlin.test.assertTrue
 
 class ProjectDslTest {
-
     @Test
     fun testProjectDslWithRequiredProperties() {
         // Create a Project using the DSL with only required properties
-        val project = project {
-            name = "Test Project"
-            owner = person {
-                name = "John Doe"
-                age = 30
+        val project =
+            project {
+                name = "Test Project"
+                owner =
+                    person {
+                        name = "John Doe"
+                        age = 30
+                    }
             }
-        }
 
         // Verify the properties
         assertEquals("Test Project", project.name)
@@ -36,35 +37,39 @@ class ProjectDslTest {
     @Test
     fun testProjectDslWithAllProperties() {
         // Create a Project using the DSL with all properties
-        val project = project {
-            name = "Complex Project"
-            description = "A project with all properties set"
+        val project =
+            project {
+                name = "Complex Project"
+                description = "A project with all properties set"
 
-            owner = person {
-                name = "Jane Smith"
-                age = 35
-                email = "jane@example.com"
+                owner =
+                    person {
+                        name = "Jane Smith"
+                        age = 35
+                        email = "jane@example.com"
+                    }
+
+                contributors =
+                    mutableListOf(
+                        person {
+                            name = "Alice Johnson"
+                            age = 28
+                            email = "alice@example.com"
+                        },
+                        person {
+                            name = "Bob Williams"
+                            age = 42
+                        },
+                    )
+
+                tags = mutableSetOf("kotlin", "dsl", "testing")
+
+                metadata =
+                    mutableMapOf(
+                        "version" to "1.0.0",
+                        "status" to "active",
+                    )
             }
-
-            contributors = mutableListOf(
-                person {
-                    name = "Alice Johnson"
-                    age = 28
-                    email = "alice@example.com"
-                },
-                person {
-                    name = "Bob Williams"
-                    age = 42
-                }
-            )
-
-            tags = mutableSetOf("kotlin", "dsl", "testing")
-
-            metadata = mutableMapOf(
-                "version" to "1.0.0",
-                "status" to "active"
-            )
-        }
 
         // Verify the basic properties
         assertEquals("Complex Project", project.name)
@@ -103,30 +108,36 @@ class ProjectDslTest {
     @Test
     fun testProjectDslWithBlockSyntax() {
         // Create a Project using the DSL with block syntax for list properties
-        val project = project {
-            name = "Block Syntax Project"
-            description = "A project using block syntax for list properties"
+        val project =
+            project {
+                name = "Block Syntax Project"
+                description = "A project using block syntax for list properties"
 
-            owner = person {
-                name = "Jane Smith"
-                age = 35
-                email = "jane@example.com"
+                owner =
+                    person {
+                        name = "Jane Smith"
+                        age = 35
+                        email = "jane@example.com"
+                    }
+
+                // Use block syntax for contributors
+                contributors {
+                    add(
+                        person {
+                            name = "Alice Johnson"
+                            age = 28
+                            email = "alice@example.com"
+                        },
+                    )
+
+                    add(
+                        person {
+                            name = "Bob Williams"
+                            age = 42
+                        },
+                    )
+                }
             }
-
-            // Use block syntax for contributors
-            contributors {
-                contributor(person {
-                    name = "Alice Johnson"
-                    age = 28
-                    email = "alice@example.com"
-                })
-
-                contributor(person {
-                    name = "Bob Williams"
-                    age = 42
-                })
-            }
-        }
 
         // Verify the basic properties
         assertEquals("Block Syntax Project", project.name)
