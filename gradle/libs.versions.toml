@@ -31,7 +31,7 @@ vanniktech-mavenPublish = "com.vanniktech.maven.publish:0.31.0"
 [libraries]
 adarshr-testLogger-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "adarshrTestLogger" }
 diffplug-spotless-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
-gavlyukovskiy-datasourceProxy = "com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.10.0"
+gavlyukovskiy-datasourceProxy = "com.github.gavlyukovskiy:datasource-proxy-spring-boot-starter:1.11.0"
 google-ksp-symbolProcessingApi = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 jackson-module-kotlin = "com.fasterxml.jackson.module:jackson-module-kotlin:2.18.3"
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
