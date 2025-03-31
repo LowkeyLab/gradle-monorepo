@@ -400,9 +400,9 @@ class DslBuilder(
         return FunSpec
             .builder(name)
             .addKdoc("Configure the [$name] property using DSL syntax.")
-            .addParameter("block", lambdaType)
+            .addParameter("init", lambdaType)
             .addStatement("val builder = %T()", builderClassType)
-            .addStatement("builder.block()")
+            .addStatement("builder.init()")
             .addStatement("this.%N = builder.build()", name)
             .build()
     }
@@ -466,10 +466,10 @@ class DslBuilder(
         return FunSpec
             .builder(functionName)
             .addKdoc("Creates a [$className] using DSL syntax.")
-            .addParameter("block", lambdaType)
+            .addParameter("init", lambdaType)
             .returns(classType)
             .addStatement("val builder = %T()", builderType)
-            .addStatement("builder.block()")
+            .addStatement("builder.init()")
             .addStatement("return builder.build()")
             .build()
     }
