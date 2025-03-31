@@ -311,14 +311,14 @@ class DslBuilder(
             else -> {
                 val typeName = type.declaration.qualifiedName?.asString() ?: TYPE_ANY
 
-                when {
-                    typeName == TYPE_STRING -> CodeBlock.of("%S", "")
-                    typeName == TYPE_INT -> CodeBlock.of("%L", 0)
-                    typeName == TYPE_LONG -> CodeBlock.of("%LL", 0)
-                    typeName == TYPE_DOUBLE -> CodeBlock.of("%L", 0.0)
-                    typeName == TYPE_FLOAT -> CodeBlock.of("%Lf", 0.0)
-                    typeName == TYPE_BOOLEAN -> CodeBlock.of("%L", false)
-                    typeName == TYPE_LIST -> {
+                when (typeName) {
+                    TYPE_STRING -> CodeBlock.of("%S", "")
+                    TYPE_INT -> CodeBlock.of("%L", 0)
+                    TYPE_LONG -> CodeBlock.of("%LL", 0)
+                    TYPE_DOUBLE -> CodeBlock.of("%L", 0.0)
+                    TYPE_FLOAT -> CodeBlock.of("%Lf", 0.0)
+                    TYPE_BOOLEAN -> CodeBlock.of("%L", false)
+                    TYPE_LIST -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -329,7 +329,7 @@ class DslBuilder(
                         CodeBlock.of("mutableListOf<%T>()", typeArg)
                     }
 
-                    typeName == TYPE_ARRAY -> {
+                    TYPE_ARRAY -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -340,13 +340,13 @@ class DslBuilder(
                         CodeBlock.of("emptyArray<%T>()", typeArg)
                     }
 
-                    typeName == TYPE_MAP -> {
+                    TYPE_MAP -> {
                         val keyType = getTypeNameFromKSType(type.arguments[0].type!!.resolve())
                         val valueType = getTypeNameFromKSType(type.arguments[1].type!!.resolve())
                         CodeBlock.of("emptyMap<%T, %T>()", keyType, valueType)
                     }
 
-                    typeName == TYPE_SET -> {
+                    TYPE_SET -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -361,7 +361,8 @@ class DslBuilder(
                         CodeBlock.of(
                             "null as %T",
                             getTypeNameFromKSType(type),
-                        ) // This is a fallback and might not compile
+                        )
+                    // This is a fallback and might not compile
                 }
             }
         }
