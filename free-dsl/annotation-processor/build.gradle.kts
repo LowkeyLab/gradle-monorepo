@@ -1,6 +1,10 @@
 plugins {
     id("kotlin-multiplatform-conventions")
-    alias(libs.plugins.google.ksp) apply false
+    id(
+        libs.plugins.kotlinx.kover
+            .get()
+            .pluginId,
+    )
 }
 
 group = rootProject.group
