@@ -73,6 +73,7 @@ class DslBuilder(
             val builderClass =
                 TypeSpec
                     .classBuilder(builderClassName)
+                    .addModifiers(emptyList())
                     .addKdoc("Builder for [$className] that supports DSL syntax.")
 
             // Add properties for each constructor parameter
@@ -159,7 +160,11 @@ class DslBuilder(
                     fileName = "${className}DslBuilder",
                 ).use { outputStream ->
                     outputStream.writer().use { writer ->
-                        fileSpec.writeTo(writer)
+                        // Convert the fileSpec to a string, remove public modifiers, and write to file
+                        val stringWriter = java.io.StringWriter()
+                        fileSpec.writeTo(stringWriter)
+                        val code = stringWriter.toString().replace("public ", "")
+                        writer.write(code)
                     }
                 }
 
@@ -200,6 +205,7 @@ class DslBuilder(
         val propertyBuilder =
             PropertySpec
                 .builder(name, typeName)
+                .addModifiers(emptyList())
                 .mutable(true) // Make it a var
 
         when {
@@ -418,6 +424,7 @@ class DslBuilder(
         val funBuilder =
             FunSpec
                 .builder("build")
+                .addModifiers(emptyList())
                 .addKdoc("Builds an instance of [$className] with the configured properties.")
                 .returns(classType)
 
@@ -465,6 +472,7 @@ class DslBuilder(
         // Create the function
         return FunSpec
             .builder(functionName)
+            .addModifiers(emptyList())
             .addKdoc("Creates a [$className] using DSL syntax.")
             .addParameter("init", lambdaType)
             .returns(classType)
@@ -526,6 +534,7 @@ class DslBuilder(
         // Create the function
         return FunSpec
             .builder(name)
+            .addModifiers(emptyList())
             .addKdoc("Configure the [$name] property using block syntax.")
             .addParameter("block", lambdaType)
             .addStatement("$name.apply { block() }")
