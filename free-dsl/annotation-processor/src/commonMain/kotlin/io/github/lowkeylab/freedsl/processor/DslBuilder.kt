@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.asTypeName
 import kotlin.properties.Delegates
 
 /**
- * Generates DSL builder code for data classes annotated with @FreeDsl.
+ * Generates DSL builder code for classes with primary constructors annotated with @FreeDsl.
  */
 class DslBuilder(
     private val classDeclaration: KSClassDeclaration,
@@ -382,17 +382,14 @@ class DslBuilder(
     private fun generateNestedBuilderMethodSpec(parameter: KSValueParameter): FunSpec {
         val name = parameter.name?.asString() ?: throw IllegalArgumentException("Parameter must have a name")
         val type = parameter.type.resolve()
-        val typeName =
-            type.declaration.qualifiedName?.asString() ?: throw IllegalArgumentException("Parameter must have a type")
-        val isNullable = type.nullability == Nullability.NULLABLE
+        val typeDeclaration = type.declaration
 
-        // Create the builder class name
-        val builderClassName =
-            if (isNullable) {
-                "${typeName.removeSuffix("?")}Builder"
-            } else {
-                "${typeName}Builder"
-            }
+        // Get the package name and simple name of the type
+        val packageName = typeDeclaration.packageName.asString()
+        val simpleName = typeDeclaration.simpleName.asString()
+
+        // Create the builder class name with the package name
+        val builderClassName = "$packageName.${simpleName}Builder"
         val builderClassType = ClassName.bestGuess(builderClassName)
 
         // Create the lambda type for the block parameter
@@ -402,14 +399,20 @@ class DslBuilder(
                 returnType = Unit::class.asClassName(),
             )
 
+        // Get the return type
+        val returnType = getTypeNameFromKSType(type)
+
         // Create the function
         return FunSpec
             .builder(name)
             .addKdoc("Configure the [$name] property using DSL syntax.")
             .addParameter("init", lambdaType)
+            .returns(returnType)
             .addStatement("val builder = %T()", builderClassType)
             .addStatement("builder.init()")
-            .addStatement("this.%N = builder.build()", name)
+            .addStatement("val result = builder.build()")
+            .addStatement("this.%N = result", name)
+            .addStatement("return result")
             .build()
     }
 
@@ -484,14 +487,16 @@ class DslBuilder(
 
     /**
      * Determines if a parameter should have a nested builder.
+     * A parameter is a nested builder candidate if its type is a class with a primary constructor that has parameters.
      */
     private fun isNestedBuilderCandidate(parameter: KSValueParameter): Boolean {
         val type = parameter.type.resolve()
         val declaration = type.declaration
 
-        // Check if it's a data class (potential nested builder)
+        // Check if it's a class with a primary constructor that has parameters
         if (declaration is KSClassDeclaration) {
-            return declaration.modifiers.any { it.toString() == "data" }
+            val primaryConstructor = declaration.primaryConstructor ?: return false
+            return primaryConstructor.parameters.isNotEmpty()
         }
 
         return false
