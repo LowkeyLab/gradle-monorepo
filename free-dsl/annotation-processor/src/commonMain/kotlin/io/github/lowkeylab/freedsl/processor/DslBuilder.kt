@@ -21,7 +21,7 @@ import com.squareup.kotlinpoet.asTypeName
 import kotlin.properties.Delegates
 
 /**
- * Generates DSL builder code for data classes annotated with @FreeDsl.
+ * Generates DSL builder code for classes with primary constructors annotated with @FreeDsl.
  */
 class DslBuilder(
     private val classDeclaration: KSClassDeclaration,
@@ -73,6 +73,7 @@ class DslBuilder(
             val builderClass =
                 TypeSpec
                     .classBuilder(builderClassName)
+                    .addModifiers(emptyList())
                     .addKdoc("Builder for [$className] that supports DSL syntax.")
 
             // Add properties for each constructor parameter
@@ -159,7 +160,11 @@ class DslBuilder(
                     fileName = "${className}DslBuilder",
                 ).use { outputStream ->
                     outputStream.writer().use { writer ->
-                        fileSpec.writeTo(writer)
+                        // Convert the fileSpec to a string, remove public modifiers, and write to file
+                        val stringWriter = java.io.StringWriter()
+                        fileSpec.writeTo(stringWriter)
+                        val code = stringWriter.toString().replace("public ", "")
+                        writer.write(code)
                     }
                 }
 
@@ -200,6 +205,7 @@ class DslBuilder(
         val propertyBuilder =
             PropertySpec
                 .builder(name, typeName)
+                .addModifiers(emptyList())
                 .mutable(true) // Make it a var
 
         when {
@@ -311,14 +317,14 @@ class DslBuilder(
             else -> {
                 val typeName = type.declaration.qualifiedName?.asString() ?: TYPE_ANY
 
-                when {
-                    typeName == TYPE_STRING -> CodeBlock.of("%S", "")
-                    typeName == TYPE_INT -> CodeBlock.of("%L", 0)
-                    typeName == TYPE_LONG -> CodeBlock.of("%LL", 0)
-                    typeName == TYPE_DOUBLE -> CodeBlock.of("%L", 0.0)
-                    typeName == TYPE_FLOAT -> CodeBlock.of("%Lf", 0.0)
-                    typeName == TYPE_BOOLEAN -> CodeBlock.of("%L", false)
-                    typeName == TYPE_LIST -> {
+                when (typeName) {
+                    TYPE_STRING -> CodeBlock.of("%S", "")
+                    TYPE_INT -> CodeBlock.of("%L", 0)
+                    TYPE_LONG -> CodeBlock.of("%LL", 0)
+                    TYPE_DOUBLE -> CodeBlock.of("%L", 0.0)
+                    TYPE_FLOAT -> CodeBlock.of("%Lf", 0.0)
+                    TYPE_BOOLEAN -> CodeBlock.of("%L", false)
+                    TYPE_LIST -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -329,7 +335,7 @@ class DslBuilder(
                         CodeBlock.of("mutableListOf<%T>()", typeArg)
                     }
 
-                    typeName == TYPE_ARRAY -> {
+                    TYPE_ARRAY -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -340,13 +346,13 @@ class DslBuilder(
                         CodeBlock.of("emptyArray<%T>()", typeArg)
                     }
 
-                    typeName == TYPE_MAP -> {
+                    TYPE_MAP -> {
                         val keyType = getTypeNameFromKSType(type.arguments[0].type!!.resolve())
                         val valueType = getTypeNameFromKSType(type.arguments[1].type!!.resolve())
                         CodeBlock.of("emptyMap<%T, %T>()", keyType, valueType)
                     }
 
-                    typeName == TYPE_SET -> {
+                    TYPE_SET -> {
                         val typeArg =
                             getTypeNameFromKSType(
                                 type.arguments
@@ -361,7 +367,8 @@ class DslBuilder(
                         CodeBlock.of(
                             "null as %T",
                             getTypeNameFromKSType(type),
-                        ) // This is a fallback and might not compile
+                        )
+                    // This is a fallback and might not compile
                 }
             }
         }
@@ -375,17 +382,14 @@ class DslBuilder(
     private fun generateNestedBuilderMethodSpec(parameter: KSValueParameter): FunSpec {
         val name = parameter.name?.asString() ?: throw IllegalArgumentException("Parameter must have a name")
         val type = parameter.type.resolve()
-        val typeName =
-            type.declaration.qualifiedName?.asString() ?: throw IllegalArgumentException("Parameter must have a type")
-        val isNullable = type.nullability == Nullability.NULLABLE
+        val typeDeclaration = type.declaration
 
-        // Create the builder class name
-        val builderClassName =
-            if (isNullable) {
-                "${typeName.removeSuffix("?")}Builder"
-            } else {
-                "${typeName}Builder"
-            }
+        // Get the package name and simple name of the type
+        val packageName = typeDeclaration.packageName.asString()
+        val simpleName = typeDeclaration.simpleName.asString()
+
+        // Create the builder class name with the package name
+        val builderClassName = "$packageName.${simpleName}Builder"
         val builderClassType = ClassName.bestGuess(builderClassName)
 
         // Create the lambda type for the block parameter
@@ -395,14 +399,20 @@ class DslBuilder(
                 returnType = Unit::class.asClassName(),
             )
 
+        // Get the return type
+        val returnType = getTypeNameFromKSType(type)
+
         // Create the function
         return FunSpec
             .builder(name)
             .addKdoc("Configure the [$name] property using DSL syntax.")
-            .addParameter("block", lambdaType)
+            .addParameter("init", lambdaType)
+            .returns(returnType)
             .addStatement("val builder = %T()", builderClassType)
-            .addStatement("builder.block()")
-            .addStatement("this.%N = builder.build()", name)
+            .addStatement("builder.init()")
+            .addStatement("val result = builder.build()")
+            .addStatement("this.%N = result", name)
+            .addStatement("return result")
             .build()
     }
 
@@ -417,6 +427,7 @@ class DslBuilder(
         val funBuilder =
             FunSpec
                 .builder("build")
+                .addModifiers(emptyList())
                 .addKdoc("Builds an instance of [$className] with the configured properties.")
                 .returns(classType)
 
@@ -464,25 +475,28 @@ class DslBuilder(
         // Create the function
         return FunSpec
             .builder(functionName)
+            .addModifiers(emptyList())
             .addKdoc("Creates a [$className] using DSL syntax.")
-            .addParameter("block", lambdaType)
+            .addParameter("init", lambdaType)
             .returns(classType)
             .addStatement("val builder = %T()", builderType)
-            .addStatement("builder.block()")
+            .addStatement("builder.init()")
             .addStatement("return builder.build()")
             .build()
     }
 
     /**
      * Determines if a parameter should have a nested builder.
+     * A parameter is a nested builder candidate if its type is a class with a primary constructor that has parameters.
      */
     private fun isNestedBuilderCandidate(parameter: KSValueParameter): Boolean {
         val type = parameter.type.resolve()
         val declaration = type.declaration
 
-        // Check if it's a data class (potential nested builder)
+        // Check if it's a class with a primary constructor that has parameters
         if (declaration is KSClassDeclaration) {
-            return declaration.modifiers.any { it.toString() == "data" }
+            val primaryConstructor = declaration.primaryConstructor ?: return false
+            return primaryConstructor.parameters.isNotEmpty()
         }
 
         return false
@@ -525,6 +539,7 @@ class DslBuilder(
         // Create the function
         return FunSpec
             .builder(name)
+            .addModifiers(emptyList())
             .addKdoc("Configure the [$name] property using block syntax.")
             .addParameter("block", lambdaType)
             .addStatement("$name.apply { block() }")

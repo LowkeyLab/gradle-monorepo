@@ -37,3 +37,13 @@ data class Project(
     val tags: Set<String> = emptySet(),
     val metadata: Map<String, String> = emptyMap(),
 )
+
+/**
+ * Test regular class (not a data class) with a primary constructor.
+ */
+@FreeDsl
+class RegularClass(
+    val name: String,
+    val value: Int,
+    val description: String? = null,
+)
