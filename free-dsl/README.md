@@ -2,6 +2,8 @@
 
 ## Overview
 
+![Maven Central Version](https://img.shields.io/maven-central/v/io.github.lowkeylab/free-dsl-core)
+
 Free-DSL is a Kotlin Multiplatform library that generates idiomatic Kotlin DSL
 builders for data classes and regular classes with primary constructors.
 It uses Kotlin Symbol Processing (KSP) to generate extension functions and
@@ -23,8 +25,8 @@ a clean, type-safe DSL syntax for constructing instances of your classes.
 
 ```kotlin
 dependencies {
-    implementation("com.github.lowkeylab:free-dsl:0.0.1")
-    ksp("com.github.lowkeylab:free-dsl:0.0.1")
+    implementation("com.github.lowkeylab:free-dsl:latest.release")
+    ksp("com.github.lowkeylab:free-dsl:latest.release")
 }
 ```
 
@@ -61,7 +63,8 @@ class RegularClass(
 
 ### 3. Build your project
 
-The KSP processor will generate DSL builder code for your annotated classes (both data classes and regular classes with primary constructors).
+The KSP processor will generate DSL builder code for your annotated classes (
+both data classes and regular classes with primary constructors).
 
 ### 4. Use the generated DSL
 
@@ -91,7 +94,8 @@ val regularClass = regularClass {
 
 ## How It Works
 
-When you annotate a data class or a regular class with a primary constructor with `@FreeDsl`, the KSP processor generates:
+When you annotate a data class or a regular class with a primary constructor
+with `@FreeDsl`, the KSP processor generates:
 
 1. A builder class for your annotated class
 2. Properties in the builder for each constructor parameter
