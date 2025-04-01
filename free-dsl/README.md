@@ -25,8 +25,8 @@ a clean, type-safe DSL syntax for constructing instances of your classes.
 
 ```kotlin
 dependencies {
-    implementation("com.github.lowkeylab:free-dsl:latest.release")
-    ksp("com.github.lowkeylab:free-dsl:latest.release")
+    implementation("com.github.lowkeylab:free-dsl-core:latest.release")
+    ksp("com.github.lowkeylab:free-dsl-core:latest.release")
 }
 ```
 
