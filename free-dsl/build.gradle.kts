@@ -23,8 +23,8 @@ sonar {
 }
 
 dependencies {
-    kover(project(":annotation-processor"))
-    kover(project(":annotation-processor-test"))
+    kover(project(":free-dsl-core"))
+    kover(project(":free-dsl-test"))
 }
 
 tasks.sonar {
