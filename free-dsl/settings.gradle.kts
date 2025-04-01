@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-include("annotation-processor")
-include("annotation-processor-test")
+include("free-dsl-core")
+include("free-dsl-test")
