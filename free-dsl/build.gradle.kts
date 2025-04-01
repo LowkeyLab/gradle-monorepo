@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlinx.kover)
 }
 
-group = "com.github.lowkeylab"
+group = "io.github.lowkeylab"
 version = "1.2.0" // x-release-please-version
 
 sonar {
