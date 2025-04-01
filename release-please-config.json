@@ -3,45 +3,31 @@
   "packages": {
     "predix": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "pto-scheduler": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "monorepo-convention-plugins": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "bg3-build-optimizer": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "guess-the-word": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "kotlin-serialization-ber": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     },
     "free-dsl": {
       "release-type": "go",
-      "extra-files": [
-        "build.gradle.kts"
-      ]
+      "extra-files": ["build.gradle.kts"]
     }
   }
 }
