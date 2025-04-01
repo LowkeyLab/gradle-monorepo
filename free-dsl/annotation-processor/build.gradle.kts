@@ -35,7 +35,9 @@ mavenPublishing {
     signAllPublications()
     pom {
         name.set("Free-DSL Annotation Processor")
-        description.set("Kotlin Symbol Processor for generating idiomatic Kotlin DSL builders for data classes and regular classes with primary constructors.")
+        description.set(
+            "Kotlin Symbol Processor for generating idiomatic Kotlin DSL builders for data classes and regular classes with primary constructors.",
+        )
         url = "https://github.com/LowkeyLab/gradle-monorepo"
         licenses {
             license {
@@ -56,4 +58,8 @@ mavenPublishing {
             developerConnection.set("scm:git:git@github.com:LowkeyLab/gradle-monorepo.git")
         }
     }
+}
+
+tasks.releaseCI {
+    dependsOn(tasks.named("publishAndReleaseToMavenCentral"))
 }
