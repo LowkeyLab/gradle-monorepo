@@ -34,7 +34,7 @@ mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
     pom {
-        name.set("Free-DSL Annotation Processor")
+        name.set("Free-DSL")
         description.set(
             "Kotlin Symbol Processor for generating idiomatic Kotlin DSL builders for data classes and regular classes with primary constructors.",
         )

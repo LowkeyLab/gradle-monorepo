@@ -16,13 +16,13 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":annotation-processor"))
+                implementation(project(":free-dsl-core"))
             }
         }
     }
 }
 
-// Add the annotation processor as a KSP dependency
+// Add the free-dsl-core module as a KSP dependency
 dependencies {
-    add("kspJvm", project(":annotation-processor"))
+    add("kspJvm", project(":free-dsl-core"))
 }
