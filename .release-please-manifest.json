@@ -2,6 +2,6 @@
   "predix": "2.0.0",
   "pto-scheduler": "2.0.0",
   "monorepo-convention-plugins": "2.0.0",
-  "guess-the-word": "1.1.0",
-  "free-dsl": "1.1.0"
+  "guess-the-word": "1.2.0",
+  "free-dsl": "1.2.0"
 }
