@@ -169,3 +169,8 @@ plugin.
 Dependencies should be managed through the version catalog in the root project.
 Add new dependencies to the version catalog rather than specifying versions
 directly in the build.gradle.kts file.
+
+## Inspiration
+
+This project is a spiritual successor
+to [FreeBuilder](https://github.com/inferred/FreeBuilder)
