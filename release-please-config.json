@@ -1,5 +1,7 @@
 {
-  "sequential-calls": true,
+  "include-component-in-tag": true,
+  "include-v-in-tag": true,
+  "tag-separator": "@",
   "packages": {
     "predix": {
       "release-type": "go",
