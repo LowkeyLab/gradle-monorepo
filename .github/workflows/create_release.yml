@@ -9,6 +9,7 @@ on:
           - pto-scheduler
           - guess-the-word
           - kotlinx-serialization-ber
+          - free-dsl
 
 permissions: {}
 

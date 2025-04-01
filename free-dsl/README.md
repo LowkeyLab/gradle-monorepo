@@ -3,15 +3,16 @@
 ## Overview
 
 Free-DSL is a Kotlin Multiplatform library that generates idiomatic Kotlin DSL
-builders for data classes.
+builders for data classes and regular classes with primary constructors.
 It uses Kotlin Symbol Processing (KSP) to generate extension functions and
 builder classes that enable
-a clean, type-safe DSL syntax for constructing instances of your data classes.
+a clean, type-safe DSL syntax for constructing instances of your classes.
 
 ## Features
 
 - Simple annotation-based API
 - Generates idiomatic Kotlin DSL builders
+- Supports both data classes and regular classes with primary constructors
 - Supports nested DSL structures
 - Handles nullable properties and default values
 - Works with Kotlin Multiplatform projects
@@ -27,11 +28,12 @@ dependencies {
 }
 ```
 
-### 2. Annotate your data classes
+### 2. Annotate your classes
 
 ```kotlin
 import io.github.lowkeylab.freedsl.FreeDsl
 
+// Annotate data classes
 @FreeDsl
 data class Person(
     val name: String,
@@ -47,17 +49,24 @@ data class Address(
     val zipCode: String,
     val country: String = "USA"
 )
+
+// Annotate regular classes with primary constructors
+@FreeDsl
+class RegularClass(
+    val name: String,
+    val value: Int,
+    val description: String? = null,
+)
 ```
 
 ### 3. Build your project
 
-The KSP processor will generate DSL builder code for your annotated data
-classes.
+The KSP processor will generate DSL builder code for your annotated classes (both data classes and regular classes with primary constructors).
 
 ### 4. Use the generated DSL
 
 ```kotlin
-// Create a Person using the generated DSL
+// Create a Person using the generated DSL for a data class
 val person = person {
     name = "John Doe"
     age = 30
@@ -71,13 +80,20 @@ val person = person {
         country = "USA"
     }
 }
+
+// Create a RegularClass using the generated DSL for a regular class with a primary constructor
+val regularClass = regularClass {
+    name = "Test Regular Class"
+    value = 42
+    description = "This is a test regular class"
+}
 ```
 
 ## How It Works
 
-When you annotate a data class with `@FreeDsl`, the KSP processor generates:
+When you annotate a data class or a regular class with a primary constructor with `@FreeDsl`, the KSP processor generates:
 
-1. A builder class for the data class
+1. A builder class for your annotated class
 2. Properties in the builder for each constructor parameter
 3. Nested builder methods for complex properties
 4. A top-level DSL function that creates and configures the builder
@@ -169,3 +185,8 @@ plugin.
 Dependencies should be managed through the version catalog in the root project.
 Add new dependencies to the version catalog rather than specifying versions
 directly in the build.gradle.kts file.
+
+## Inspiration
+
+This project is a spiritual successor
+to [FreeBuilder](https://github.com/inferred/FreeBuilder)
