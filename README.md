@@ -69,13 +69,13 @@ For example:
 To run tests for the entire monorepo:
 
 ```bash
-./gradlew test
+./gradlew check
 ```
 
 To run tests for a specific project:
 
 ```bash
-./gradlew :projectName:test
+./gradlew :projectName:check
 ```
 
 ## Other Common Tasks
