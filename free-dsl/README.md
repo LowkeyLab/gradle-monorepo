@@ -1,8 +1,8 @@
 # Free-DSL: Kotlin DSL Builder Generator
 
-## Overview
-
 [![Maven Central Version](https://img.shields.io/maven-central/v/io.github.lowkeylab/free-dsl-core)](https://central.sonatype.com/artifact/io.github.lowkeylab/free-dsl-core)
+
+## Overview
 
 Free-DSL is a Kotlin Multiplatform library that generates idiomatic Kotlin DSL
 builders for data classes and regular classes with primary constructors.
