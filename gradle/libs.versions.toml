@@ -12,7 +12,7 @@ liquibase = "4.31.1"
 mapstruct = "1.6.3"
 postgresql = "42.7.5"
 spotless = "7.0.3"
-springBoot = "3.4.4"
+springBoot = "3.4.5"
 testcontainers = "1.21.0"
 
 [plugins]
