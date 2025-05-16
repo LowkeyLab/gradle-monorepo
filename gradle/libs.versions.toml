@@ -25,7 +25,7 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinx-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 littlerobots-versionCatalogUpdate = "nl.littlerobots.version-catalog-update:1.0.0"
-sonarqube = "org.sonarqube:6.1.0.5360"
+sonarqube = "org.sonarqube:6.2.0.5505"
 vanniktech-mavenPublish = "com.vanniktech.maven.publish:0.32.0"
 
 [libraries]
