@@ -1,6 +1,6 @@
 [versions]
 adarshrTestLogger = "4.0.0"
-indispensable = "3.16.1"
+indispensable = "3.16.2"
 kotest = "5.9.1"
 kotlin = "2.1.21"
 kotlinPoet = "2.2.0"
