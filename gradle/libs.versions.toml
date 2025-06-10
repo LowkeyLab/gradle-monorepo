@@ -64,7 +64,7 @@ spring-boot-starterWeb = { module = "org.springframework.boot:spring-boot-starte
 spring-boot-starterWebflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
 spring-boot-starterWebsocket = { module = "org.springframework.boot:spring-boot-starter-websocket", version.ref = "springBoot" }
 spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "springBoot" }
-springdoc-openApiStarterWebMvcUi = "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8"
+springdoc-openApiStarterWebMvcUi = "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9"
 square-kotlinPoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinPoet" }
 testcontainers-junitJupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainers" }
 testcontainers-mongodb = { module = "org.testcontainers:mongodb", version.ref = "testcontainers" }
