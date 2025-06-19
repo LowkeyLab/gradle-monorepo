@@ -13,7 +13,7 @@ mapstruct = "1.6.3"
 postgresql = "42.7.7"
 spotless = "7.0.4"
 springBoot = "3.4.5"
-testcontainers = "1.21.1"
+testcontainers = "1.21.2"
 
 [plugins]
 benManes-versions = "com.github.ben-manes.versions:0.52.0"
