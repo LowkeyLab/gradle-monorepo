@@ -6,11 +6,13 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.symbol.Nullability
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -56,6 +58,19 @@ class DslBuilder(
     private val constructorParameters = classDeclaration.primaryConstructor?.parameters ?: emptyList()
 
     /**
+     * Gets the visibility modifiers for the class to apply to generated code.
+     */
+    private fun getVisibilityModifiers(): List<KModifier> {
+        val modifiers = classDeclaration.modifiers
+        return when {
+            modifiers.contains(Modifier.INTERNAL) -> listOf(KModifier.INTERNAL)
+            modifiers.contains(Modifier.PRIVATE) -> listOf(KModifier.PRIVATE)
+            modifiers.contains(Modifier.PROTECTED) -> listOf(KModifier.PROTECTED)
+            else -> emptyList() // public is default in KotlinPoet
+        }
+    }
+
+    /**
      * Generates the DSL builder code for the class.
      */
     fun generate() {
@@ -70,10 +85,11 @@ class DslBuilder(
             val builderType = ClassName.bestGuess("$packageName.$builderClassName")
 
             // Create the builder class
+            val visibilityModifiers = getVisibilityModifiers()
             val builderClass =
                 TypeSpec
                     .classBuilder(builderClassName)
-                    .addModifiers(emptyList())
+                    .addModifiers(visibilityModifiers)
                     .addKdoc("Builder for [$className] that supports DSL syntax.")
 
             // Add properties for each constructor parameter
@@ -136,7 +152,7 @@ class DslBuilder(
             builderClass.addFunction(buildMethod)
 
             // Create the DSL function
-            val dslFunction = generateDslFunctionSpec(classType, builderType)
+            val dslFunction = generateDslFunctionSpec(classType, builderType, visibilityModifiers)
 
             // Create the file spec
             val fileSpecBuilder =
@@ -160,11 +176,8 @@ class DslBuilder(
                     fileName = "${className}DslBuilder",
                 ).use { outputStream ->
                     outputStream.writer().use { writer ->
-                        // Convert the fileSpec to a string, remove public modifiers, and write to file
-                        val stringWriter = java.io.StringWriter()
-                        fileSpec.writeTo(stringWriter)
-                        val code = stringWriter.toString().replace("public ", "")
-                        writer.write(code)
+                        // Write the fileSpec to the writer
+                        fileSpec.writeTo(writer)
                     }
                 }
 
@@ -457,11 +470,13 @@ class DslBuilder(
      *
      * @param classType The TypeName for the class
      * @param builderType The TypeName for the builder class
+     * @param visibilityModifiers The visibility modifiers to apply
      * @return The FunSpec for the DSL function
      */
     private fun generateDslFunctionSpec(
         classType: TypeName = ClassName.bestGuess(className),
         builderType: TypeName = ClassName.bestGuess(builderClassName),
+        visibilityModifiers: List<KModifier> = emptyList(),
     ): FunSpec {
         val functionName = className.decapitalize()
 
@@ -475,7 +490,7 @@ class DslBuilder(
         // Create the function
         return FunSpec
             .builder(functionName)
-            .addModifiers(emptyList())
+            .addModifiers(visibilityModifiers)
             .addKdoc("Creates a [$className] using DSL syntax.")
             .addParameter("init", lambdaType)
             .returns(classType)
