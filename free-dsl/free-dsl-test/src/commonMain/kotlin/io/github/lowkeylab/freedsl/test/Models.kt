@@ -47,3 +47,21 @@ class RegularClass(
     val value: Int,
     val description: String? = null,
 )
+
+/**
+ * Test public class to verify DSL function visibility.
+ */
+@FreeDsl
+public class PublicClass(
+    val name: String,
+    val value: Int,
+)
+
+/**
+ * Test internal class to verify DSL function visibility.
+ */
+@FreeDsl
+internal class InternalClass(
+    val name: String,
+    val value: Int,
+)
