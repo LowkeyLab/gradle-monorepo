@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "io.github.lowkeylab"
-version = "1.2.0" // x-release-please-version
+version = "1.2.1" // x-release-please-version
 
 sonar {
     properties {
