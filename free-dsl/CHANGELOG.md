@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/LowkeyLab/gradle-monorepo/compare/v1.2.0...v1.2.1) (2025-07-01)
+
+
+### Bug Fixes
+
+* **free-dsl:** Respect class visibility modifiers ([#199](https://github.com/LowkeyLab/gradle-monorepo/issues/199)) ([60bbcb2](https://github.com/LowkeyLab/gradle-monorepo/commit/60bbcb246311a018e03d89326f6aee918168e7a5))
+
 ## [1.2.0](https://github.com/LowkeyLab/gradle-monorepo/compare/v1.1.0...v1.2.0) (2025-04-01)
 
 
