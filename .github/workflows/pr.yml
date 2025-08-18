@@ -14,11 +14,13 @@ jobs:
   submit-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Setup repo
+        uses: ./.github/actions/setup-env
         with:
-          distribution: temurin
-          java-version: ${{ vars.JAVA_VERSION }}
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
         with:
@@ -31,11 +33,13 @@ jobs:
   review-dependencies:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Setup repo
+        uses: ./.github/actions/setup-env
         with:
-          distribution: temurin
-          java-version: ${{ vars.JAVA_VERSION }}
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Perform dependency review
         uses: actions/dependency-review-action@v4
         continue-on-error: true

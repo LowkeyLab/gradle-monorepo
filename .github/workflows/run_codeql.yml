@@ -11,11 +11,11 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-java@v4
+      - name: Setup repository
+        uses: ./.github/actions/setup-env
         with:
-          distribution: temurin
-          java-version: ${{ vars.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v4
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup CodeQL analysis
         uses: github/codeql-action/init@v3
         with:
