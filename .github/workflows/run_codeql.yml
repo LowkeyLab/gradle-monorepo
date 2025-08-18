@@ -11,13 +11,8 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v5
-      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Activate mise
-        run: |
-          mise env -D >> $GITHUB_ENV
-      - uses: gradle/actions/setup-gradle@v4
+      - name: Setup repository
+        uses: ./.github/actions/setup-env
       - name: Setup CodeQL analysis
         uses: github/codeql-action/init@v3
         with:

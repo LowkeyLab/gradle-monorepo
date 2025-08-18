@@ -12,6 +12,10 @@ jobs:
   build-project:
     runs-on: "ubuntu-latest"
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Shallow clones should be disabled for SonarCloud
       - name: Setup repo
         uses: ./.github/actions/setup-env
       - name: Run tests

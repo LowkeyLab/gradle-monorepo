@@ -14,6 +14,8 @@ jobs:
   submit-dependencies:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
       - name: Setup repo
         uses: ./.github/actions/setup-env
       - name: Generate and submit dependency graph
@@ -28,6 +30,8 @@ jobs:
   review-dependencies:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
       - name: Setup repo
         uses: ./.github/actions/setup-env
       - name: Perform dependency review
