@@ -21,8 +21,7 @@ jobs:
       - name: figure out where Java is
         run: |
           java -version
-          mise env | grep JAVA_HOME
-          mise env -s bash
+          eval "$(mise env -s bash)"
           echo "JAVA_HOME=${JAVA_HOME}"
       - uses: gradle/actions/setup-gradle@v4
         with:
