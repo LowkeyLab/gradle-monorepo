@@ -20,11 +20,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Activate mise
         run: |
-          eval "$(mise env -D)" >> $GITHUB_ENV
+          mise env -D >> $GITHUB_ENV
       - uses: gradle/actions/setup-gradle@v4
         with:
           cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
-      - run: echo ${{ env.JAVA_HOME }}
       - name: Cache SonarCloud packages
         uses: actions/cache@v4
         with:
