@@ -16,7 +16,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Activate mise
         run: |
-          eval "$(mise env -D)" >> $GITHUB_ENV
+          mise env -D >> $GITHUB_ENV
       - uses: gradle/actions/setup-gradle@v4
       - name: Setup CodeQL analysis
         uses: github/codeql-action/init@v3
