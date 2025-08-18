@@ -2,12 +2,12 @@ name: setup-env
 author: tacascer
 description: Sets up the environment for the project.
 inputs:
-    GRADLE_CONFIG_CACHE_KEY:
-        description: "The encryption key for Gradle configuration cache."
-        required: true
-    GITHUB_TOKEN:
-        description: "GitHub token for authentication."
-        required: true
+  GRADLE_CONFIG_CACHE_KEY:
+    description: "The encryption key for Gradle configuration cache."
+    required: true
+  GITHUB_TOKEN:
+    description: "GitHub token for authentication."
+    required: true
 runs:
   using: composite
   steps:
