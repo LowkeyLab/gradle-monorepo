@@ -21,7 +21,7 @@ jobs:
       - name: figure out where Java is
         run: |
           java -version
-          mise activate bash
+          mise env >> $GITHUB_ENV
           echo "JAVA_HOME=${JAVA_HOME}"
       - uses: gradle/actions/setup-gradle@v4
         with:
