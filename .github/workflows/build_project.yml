@@ -12,22 +12,15 @@ jobs:
   build-project:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - name: Checkout repository
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0 # Shallow clones should be disabled for SonarCloud
-      - uses: actions/setup-java@v4
+      - name: Setup repo
+        uses: ./.github/actions/setup-env
         with:
-          distribution: temurin
-          java-version: ${{ vars.JAVA_VERSION }}
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/build/.sonar/cache
-          key: ${{ runner.os }}-sonar
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         env:
           SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}
