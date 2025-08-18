@@ -12,25 +12,8 @@ jobs:
   build-project:
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
-        with:
-          fetch-depth: 0 # Shallow clones should be disabled for SonarCloud
-      - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Activate mise
-        run: |
-          mise env -D >> $GITHUB_ENV
-      - uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
-      - run: echo "$JAVA_HOME"
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/build/.sonar/cache
-          key: ${{ runner.os }}-sonar
+      - name: Setup repo
+        uses: ./.github/actions/setup-env
       - name: Run tests
         env:
           SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}

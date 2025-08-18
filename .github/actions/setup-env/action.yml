@@ -1,0 +1,31 @@
+name: setup-env
+author: tacascer
+description: Sets up the environment for the project.
+runs:
+  using: composite
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: 0 # Shallow clones should be disabled for SonarCloud
+
+    - name: Install mise
+      uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Activate mise
+      shell: bash
+      run: mise env -D >> $GITHUB_ENV
+
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+
+    - name: Cache SonarCloud packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          **/build/.sonar/cache
+        key: ${{ runner.os }}-sonar
