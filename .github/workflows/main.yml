@@ -41,8 +41,9 @@ jobs:
       - uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Link mise installs to asdf
-        run: mkdir -p ~/.asdf/installs/ && ln -s ~/.local/share/mise/installs/java ~/.asdf/installs/
+      - name: Activate mise and set JAVA_HOME
+        run: |
+          eval "$(mise env -s bash)"
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
         with:

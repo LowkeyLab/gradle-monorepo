@@ -22,9 +22,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Activate mise and set JAVA_HOME
-        # This is the key step. 'mise activate' exports JAVA_HOME for the current shell.
-        # It reads the java version from the .mise.toml file.
-        run: eval "$(mise activate bash)"
+        run: |
+          eval "$(mise env -s bash)"
       - uses: gradle/actions/setup-gradle@v4
       - name: Create release
         env:
