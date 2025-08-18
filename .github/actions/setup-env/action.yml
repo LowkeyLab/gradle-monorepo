@@ -1,13 +1,20 @@
 name: setup-env
 author: tacascer
 description: Sets up the environment for the project.
+inputs:
+    GRADLE_CONFIG_CACHE_KEY:
+        description: "The encryption key for Gradle configuration cache."
+        required: true
+    GITHUB_TOKEN:
+        description: "GitHub token for authentication."
+        required: true
 runs:
   using: composite
   steps:
     - name: Install mise
       uses: jdx/mise-action@c37c93293d6b742fc901e1406b8f764f6fb19dac
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
     - name: Activate mise
       shell: bash
@@ -16,7 +23,7 @@ runs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
-        cache-encryption-key: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+        cache-encryption-key: ${{ inputs.GRADLE_CONFIG_CACHE_KEY }}
 
     - name: Cache SonarCloud packages
       uses: actions/cache@v4

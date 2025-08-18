@@ -13,6 +13,9 @@ jobs:
       - uses: actions/checkout@v5
       - name: Setup repository
         uses: ./.github/actions/setup-env
+        with:
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup CodeQL analysis
         uses: github/codeql-action/init@v3
         with:

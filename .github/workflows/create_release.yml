@@ -21,6 +21,9 @@ jobs:
         uses: actions/checkout@v5
       - name: Setup repo
         uses: ./.github/actions/setup-env
+        with:
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Create release
         env:
           DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}

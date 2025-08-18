@@ -18,6 +18,9 @@ jobs:
           fetch-depth: 0 # Shallow clones should be disabled for SonarCloud
       - name: Setup repo
         uses: ./.github/actions/setup-env
+        with:
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Run tests
         env:
           SONAR_HOST_URL: ${{vars.SONAR_HOST_URL}}

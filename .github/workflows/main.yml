@@ -39,6 +39,9 @@ jobs:
     steps:
       - name: Setup repo
         uses: ./.github/actions/setup-env
+        with:
+          GRADLE_CONFIG_CACHE_KEY: ${{ secrets.GRADLE_CONFIG_CACHE_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate and submit dependency graph
         uses: gradle/actions/dependency-submission@v4
         with:
