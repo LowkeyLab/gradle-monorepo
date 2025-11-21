@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup repo
         uses: ./.github/actions/setup-env
         with:
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Setup repo
         uses: ./.github/actions/setup-env
         with:
@@ -54,7 +54,7 @@ jobs:
       contents: write
       checks: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           # super-linter needs the full git history to get the
           # list of files that changed across commits
