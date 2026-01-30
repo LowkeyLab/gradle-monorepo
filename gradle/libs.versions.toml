@@ -1,7 +1,7 @@
 [versions]
 adarshrTestLogger = "4.0.0"
 indispensable = "3.16.3"
-kotest = "5.9.1"
+kotest = "6.0.0"
 kotlin = "2.2.10"
 kotlinPoet = "2.2.0"
 kotlinxDatetime = "0.6.2"
