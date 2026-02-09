@@ -61,7 +61,7 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
       - name: Super-Linter
-        uses: super-linter/super-linter@v8.4.0
+        uses: super-linter/super-linter@v8.5.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Set your fix mode variables to true
