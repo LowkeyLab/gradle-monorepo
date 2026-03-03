@@ -72,7 +72,7 @@ jobs:
           VALIDATE_JSCPD: false # Disable JSCPD validation
       - name: Import GPG Key
         id: import-gpg
-        uses: crazy-max/ghaction-import-gpg@v6
+        uses: crazy-max/ghaction-import-gpg@v7
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           git_user_signingkey: true
